@@ -8,6 +8,7 @@ class UsersModel {
   final String lastName;
   final DateTime birthDay;
   final int age;
+  final DateTime period;
 
   UsersModel({
     required this.userId,
@@ -17,6 +18,7 @@ class UsersModel {
     required this.lastName,
     required this.birthDay,
     required this.age,
+    required this.period,
   });
 
   Map<String, dynamic> toMap() {
@@ -41,6 +43,7 @@ class UsersModel {
       lastName: data['lastName'],
       birthDay: (data['birthDay'] as Timestamp).toDate(),
       age: data['age'],
+      period: data['period'],
     );
   }
 }
