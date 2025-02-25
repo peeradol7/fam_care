@@ -5,9 +5,15 @@ import 'package:flutter/material.dart';
 import 'app_routes.dart';
 
 void main() async {
+  // เรียกใช้ ensureInitialized ก่อนที่ Firebase จะทำงาน
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // เริ่ม Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // รันแอป
   runApp(const MyApp());
 }
 

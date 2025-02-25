@@ -8,7 +8,7 @@ class UsersModel {
   final String lastName;
   final DateTime birthDay;
   final int age;
-  final DateTime period;
+  final DateTime? period;
 
   UsersModel({
     required this.userId,
@@ -21,7 +21,7 @@ class UsersModel {
     required this.period,
   });
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'userId': userId,
       'email': email,
@@ -46,4 +46,6 @@ class UsersModel {
       period: data['period'],
     );
   }
+
+
 }
