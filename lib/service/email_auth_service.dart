@@ -7,7 +7,7 @@ import 'user_service.dart';
 class EmailAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final UserService _userService = UserService();
+  //final UserService _userService = UserService();
 
   static final String userCollection = 'users';
 
