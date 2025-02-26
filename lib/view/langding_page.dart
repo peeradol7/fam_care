@@ -1,80 +1,24 @@
 import 'package:fam_care/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:go_router/go_router.dart';
 
-
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class LandingPage extends StatelessWidget {
+  LandingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // รายการรูปภาพสำหรับ carousel
-    final List<String> imageList = [
-      'assets/images/family1.jpg',
-      'assets/images/family2.jpg',
-      'assets/images/family3.jpg',
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('FamCare'),
         backgroundColor: Colors.blue.shade100,
-        actions: [
-          // ปุ่ม Login ที่มุมขวาบนของ AppBar
-          TextButton.icon(
-            icon: const Icon(Icons.login, color: Colors.blue),
-            label: const Text(
-              'Login',
-              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-            ),
-            onPressed: () {
-              // นำทางไปยังหน้า Login ด้วย GoRouter
-              context.push(AppRoutes.loginpage);
-            },
-          ),
-        ],
+        actions: [],
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 1. ส่วน Hero - Carousel สำหรับรูปภาพหลัก
-            CarouselSlider(
-              options: CarouselOptions(
-                height: 220.0,
-                enlargeCenterPage: true,
-                autoPlay: true,
-                aspectRatio: 16 / 9,
-                autoPlayCurve: Curves.fastOutSlowIn,
-                enableInfiniteScroll: true,
-                autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                viewportFraction: 0.8,
-              ),
-              items: imageList.map((item) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        image: DecorationImage(
-                          image: AssetImage(item),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
-            ),
-
             const SizedBox(height: 20),
 
-            // 2. ส่วนข้อความต้อนรับ
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
@@ -98,7 +42,6 @@ class HomePage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // 3. ส่วนโฆษณา (Banner)
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16.0),
               height: 100,
@@ -126,7 +69,6 @@ class HomePage extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            // 4. ปุ่ม Login หลัก
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
               child: ElevatedButton.icon(
@@ -141,8 +83,7 @@ class HomePage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                 ),
                 onPressed: () {
-                  // นำทางไปยังหน้า Login ด้วย GoRouter
-                  context.push(AppRoutes.loginpage);
+                  context.push(AppRoutes.loginPage);
                 },
               ),
             ),
@@ -164,7 +105,6 @@ class HomePage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                 ),
                 onPressed: () {
-                  // นำทางไปยังหน้า Register ด้วย GoRouter
                   context.push(AppRoutes.registerpage);
                 },
               ),
@@ -172,7 +112,6 @@ class HomePage extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            // 6. ส่วนโฆษณา (Grid)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(

@@ -1,33 +1,38 @@
-import 'package:fam_care/view/home_page.dart';
+import 'package:fam_care/view/input_information_page.dart';
+import 'package:fam_care/view/langding_page.dart';
 import 'package:fam_care/view/login_email_password.dart';
 import 'package:fam_care/view/login_page.dart';
 import 'package:fam_care/view/register_page.dart';
-
 import 'package:go_router/go_router.dart';
 
 class AppRoutes {
   static const String landingPage = '/';
-  static const String loginpage = '/loginpage';
+  static const String loginPage = '/loginpage';
   static const String registerpage = '/register';
-    static const String login_email_password_page = '/login_email_page';
-
-
+  static const String loginEmailPasswordPage = '/login_email_page';
+  static const String inputInformationPage = '/input-information';
   static final GoRouter router = GoRouter(
     initialLocation: landingPage,
     routes: [
       GoRoute(
         path: landingPage,
-        builder: (context, state) => const HomePage(),
+        builder: (context, state) => LandingPage(),
       ),
       GoRoute(
-        path: loginpage,
+        path: loginPage,
         builder: (context, state) => LoginPage(),
       ),
-      GoRoute(path: registerpage, 
-              builder: (context, state) =>  RegisterPage(),
+      GoRoute(
+        path: registerpage,
+        builder: (context, state) => RegisterPage(),
       ),
-      GoRoute(path: login_email_password_page, 
-              builder: (context, state) => LoginEmailPassword(),
+      GoRoute(
+        path: loginEmailPasswordPage,
+        builder: (context, state) => LoginEmailPassword(),
+      ),
+      GoRoute(
+        path: inputInformationPage,
+        builder: (context, state) => InputInformationPage(),
       )
     ],
     debugLogDiagnostics: true,

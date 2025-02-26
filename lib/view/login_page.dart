@@ -1,16 +1,43 @@
 // 1. ปรับปรุง Login Page
 import 'package:fam_care/app_routes.dart';
-import 'package:fam_care/service/google_auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
+import '../controller/google_auth_controller.dart';
+
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
-  
+  LoginPage({Key? key}) : super(key: key);
+  final GoogleAuthController googleAuthController =
+      Get.find<GoogleAuthController>();
+
   @override
   Widget build(BuildContext context) {
-    final GoogleAuthService _authService = GoogleAuthService();
-    
+    Future<void> handleLogin() async {
+      try {
+        await googleAuthController.googleLoginController();
+
+        await Future.delayed(Duration(milliseconds: 500));
+
+        if (googleAuthController.userData.value == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Login failed. Please try again.')),
+          );
+        } else {
+          if (context.mounted) {
+            context.go(AppRoutes.inputInformationPage);
+          }
+        }
+      } catch (e) {
+        print('Error: $e');
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('An error occurred. Please try again.')),
+          );
+        }
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
@@ -53,37 +80,26 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 40),
-                    
-                    // ปุ่ม Login ด้วย Google
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.login),
-                      label: const Text('Login with Google'),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 50),
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                      ),
-                      onPressed: () async {
-                        var userCredential = await _authService.signInWithGoogle();
-                        if (userCredential != null) {
-                          print('Login Success: ${userCredential.user!.email}');
-                          // เมื่อเข้าสู่ระบบสำเร็จให้นำทางไปที่หน้าหลัก
-                          context.go(AppRoutes.landingPage);
-                        } else {
-                          // แสดงข้อความ error
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Login Failed. Please try again.'),
-                              backgroundColor: Colors.red,
+
+                    Obx(
+                      () => googleAuthController.isLoading.value
+                          ? Center(child: CircularProgressIndicator())
+                          : ElevatedButton.icon(
+                              icon: const Icon(Icons.login),
+                              label: const Text('Login with Google'),
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(double.infinity, 50),
+                                backgroundColor: Colors.blue,
+                                foregroundColor: Colors.white,
+                              ),
+                              onPressed: () {
+                                handleLogin();
+                              },
                             ),
-                          );
-                        }
-                      },
                     ),
 
                     const SizedBox(height: 20),
 
-                    // ปุ่ม Login ด้วย Email/Password
                     ElevatedButton.icon(
                       icon: const Icon(Icons.email),
                       label: const Text('Login with Email'),
@@ -93,7 +109,7 @@ class LoginPage extends StatelessWidget {
                         foregroundColor: Colors.white,
                       ),
                       onPressed: () {
-                        context.push(AppRoutes.login_email_password_page);
+                        context.push(AppRoutes.inputInformationPage);
                       },
                     ),
 
