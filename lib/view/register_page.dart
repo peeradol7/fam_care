@@ -1,36 +1,46 @@
+import 'package:fam_care/controller/email_login_controller.dart';
 import 'package:flutter/material.dart';
-import '../service/email_login_service.dart';
+import 'package:get/get.dart';
 
+import '../model/users_model.dart';
 
-class RegisterPage extends StatefulWidget {
-  @override
-  _RegisterPageState createState() => _RegisterPageState();
-}
+class RegisterPage extends StatelessWidget {
+  final EmailLoginController authController = Get.put(EmailLoginController());
 
-class _RegisterPageState extends State<RegisterPage> {
-  final EmailAuthService _authService = EmailAuthService();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
+  final TextEditingController birthDayController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  void _register() async {
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
+  final Rxn<DateTime> selectedDate = Rxn<DateTime>();
 
-    String? result = await _authService.registerWithEmail(email, password);
-    
-    if (result == 'success') {
-      print('Register Success');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('สมัครสมาชิกสำเร็จ!')),
-      );
-    } else {
-      print('Register Failed: $result');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result!)), // แสดงข้อความผิดพลาด
-      );
-    }
+  void _register() {
+    UsersModel user = UsersModel(
+      email: emailController.text.trim(),
+      firstName: firstNameController.text.trim(),
+      lastName: lastNameController.text.trim(),
+      password: passwordController.text.trim(),
+      age: int.tryParse(ageController.text.trim()) ?? 0,
+      birthDay: selectedDate.value!,
+      period: null,
+    );
+
+    authController.signUp(user);
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      selectedDate.value = picked;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,19 +51,38 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Column(
           children: [
             TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+                controller: emailController,
+                decoration: InputDecoration(labelText: 'Email')),
+            TextField(
+                controller: firstNameController,
+                decoration: InputDecoration(labelText: 'First Name')),
+            TextField(
+                controller: lastNameController,
+                decoration: InputDecoration(labelText: 'Last Name')),
+            TextField(
+                controller: ageController,
+                decoration: InputDecoration(labelText: 'Age'),
+                keyboardType: TextInputType.number),
+            TextField(
+              controller: birthDayController,
+              decoration: InputDecoration(
+                labelText: 'Birth Day',
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.calendar_today),
+                  onPressed: () => _selectDate(context),
+                ),
+              ),
+              readOnly: true, // ไม่ให้พิมพ์เอง
             ),
             TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
+                controller: passwordController,
+                decoration: InputDecoration(labelText: 'Password'),
+                obscureText: true),
             SizedBox(height: 20),
-            ElevatedButton(
-              child: Text('Register'),
-              onPressed: _register,
-            ),
+            Obx(() => authController.isLoading.value
+                ? CircularProgressIndicator()
+                : ElevatedButton(
+                    onPressed: _register, child: Text('Register'))),
           ],
         ),
       ),

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UsersModel {
-  final String userId;
+  final String? userId;
   final String email;
   final String? password;
   final String firstName;
@@ -11,7 +11,7 @@ class UsersModel {
   final DateTime? period;
 
   UsersModel({
-    required this.userId,
+    this.userId,
     required this.email,
     this.password,
     required this.firstName,
@@ -46,6 +46,4 @@ class UsersModel {
       period: data['period'],
     );
   }
-
-
 }
