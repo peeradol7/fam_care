@@ -1,10 +1,16 @@
 import 'package:fam_care/controller/email_login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../model/users_model.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
+  @override
+  _RegisterPageState createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
   final EmailLoginController authController = Get.put(EmailLoginController());
 
   final TextEditingController emailController = TextEditingController();
@@ -16,6 +22,36 @@ class RegisterPage extends StatelessWidget {
 
   final Rxn<DateTime> selectedDate = Rxn<DateTime>();
 
+  @override
+  void initState() {
+    super.initState();
+
+    // Listener เมื่อผู้ใช้กรอกอายุ
+    ageController.addListener(() {
+      int? age = int.tryParse(ageController.text.trim());
+      if (age != null && age > 0) {
+        setState(() {
+          selectedDate.value = DateTime.now().subtract(Duration(days: age * 365));
+          birthDayController.text = DateFormat('dd/MM/yyyy').format(selectedDate.value!);
+        });
+      }
+    });
+
+    // Listener เมื่อผู้ใช้กรอกวันเกิด
+    birthDayController.addListener(() {
+      try {
+        DateTime birthDate = DateFormat('dd/MM/yyyy').parse(birthDayController.text.trim());
+        setState(() {
+          selectedDate.value = birthDate;
+          int calculatedAge = DateTime.now().year - birthDate.year;
+          ageController.text = calculatedAge.toString();
+        });
+      } catch (e) {
+        // ถ้ากรอกไม่ถูก format จะไม่ทำอะไร
+      }
+    });
+  }
+
   void _register() {
     UsersModel user = UsersModel(
       email: emailController.text.trim(),
@@ -23,7 +59,7 @@ class RegisterPage extends StatelessWidget {
       lastName: lastNameController.text.trim(),
       password: passwordController.text.trim(),
       age: int.tryParse(ageController.text.trim()) ?? 0,
-      birthDay: selectedDate.value!,
+      birthDay: selectedDate.value,
       period: null,
     );
 
@@ -33,13 +69,29 @@ class RegisterPage extends StatelessWidget {
   Future<void> _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: selectedDate.value ?? DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
+
     if (picked != null) {
-      selectedDate.value = picked;
+      setState(() {
+        selectedDate.value = picked;
+        birthDayController.text = DateFormat('dd/MM/yyyy').format(picked);
+        ageController.text = (DateTime.now().year - picked.year).toString();
+      });
     }
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
+    ageController.dispose();
+    birthDayController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -72,7 +124,7 @@ class RegisterPage extends StatelessWidget {
                   onPressed: () => _selectDate(context),
                 ),
               ),
-              readOnly: true, // ไม่ให้พิมพ์เอง
+              readOnly: true,
             ),
             TextField(
                 controller: passwordController,

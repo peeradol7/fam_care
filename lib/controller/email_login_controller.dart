@@ -1,3 +1,4 @@
+import 'package:fam_care/app_routes.dart';
 import 'package:fam_care/model/users_model.dart';
 import 'package:fam_care/service/email_auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -48,7 +49,7 @@ class EmailLoginController extends GetxController {
         
         // นำทางไปยังหน้า Home ด้วย GoRouter
         if (context.mounted) {
-          context.go('/home');
+          context.go(AppRoutes.homePage);
         }
       }
     } catch (e) {
@@ -87,7 +88,7 @@ class EmailLoginController extends GetxController {
       userData.value = null;
       
       if (context.mounted) {
-        context.go('/login');
+        context.go(AppRoutes.landingPage);
       }
     } catch (e) {
       Get.snackbar(

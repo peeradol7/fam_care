@@ -1,7 +1,6 @@
 import 'package:fam_care/view/home_page/home_page.dart';
 import 'package:fam_care/view/input_information_page.dart';
 import 'package:fam_care/view/landing_page/langding_page.dart';
-import 'package:fam_care/view/login_email_password.dart';
 import 'package:fam_care/view/login_page.dart';
 import 'package:fam_care/view/register_page.dart';
 import 'package:go_router/go_router.dart';
@@ -39,7 +38,7 @@ class AppRoutes {
       ),
       GoRoute(
         path: homePage,
-        builder: (context, state) => HomePage(),
+        builder: (context, state) => HomeScreen(),
       ),
     ],
     debugLogDiagnostics: true,

@@ -94,47 +94,49 @@ class EmailAuthService {
     }
      
      
-     // ฟังก์ชันใหม่สำหรับดึงข้อมูลผู้ใช้หลังจาก login
   Future<UsersModel?> getUserData(String uid) async {
     try {
-      // ตรวจสอบว่ามีผู้ใช้ที่เข้าสู่ระบบอยู่หรือไม่
       User? currentUser = _auth.currentUser;
-      
       if (currentUser == null) {
         throw "ไม่พบข้อมูลผู้ใช้ที่เข้าสู่ระบบ";
       }
-      
-      // ดึงข้อมูลจาก Firestore โดยใช้ userId ของผู้ใช้ที่เข้าสู่ระบบ
+
       DocumentSnapshot userDoc = await _firestore
           .collection(userCollection)
           .doc(currentUser.uid)
           .get();
-      
+
       if (!userDoc.exists) {
         throw "ไม่พบข้อมูลผู้ใช้ในฐานข้อมูล";
       }
-      
-      // แปลงข้อมูลจาก DocumentSnapshot เป็น Map
+
       Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-      
-      // สร้าง object UsersModel จากข้อมูลที่ดึงมาได้
+
+      // ฟังก์ชันช่วยแปลง Timestamp เป็น DateTime
+      DateTime? parseTimestamp(dynamic value) {
+        if (value is Timestamp) {
+          return value.toDate();
+        }
+        return null;
+      }
+
+      // ดึงข้อมูลและแปลงค่า birthDay และ updatedAt
       UsersModel user = UsersModel(
-        userId: userData["userId"],
-        email: userData["email"],
-        firstName: userData["firstName"],
-        lastName: userData["lastName"],
-        age: userData["age"],
-        birthDay: userData["birthDay"],
-        period: userData["updatedAt"],
-        // ไม่ต้องเซ็ต password เพราะเป็นข้อมูลที่ละเอียดอ่อน
+        userId: userData["userId"] ?? "",
+        email: userData["email"] ?? "",
+        firstName: userData["firstName"] ?? "",
+        lastName: userData["lastName"] ?? "",
+        age: userData["age"] ?? 0,
+        birthDay: parseTimestamp(userData["birthDay"]),  // ✅ แปลง Timestamp เป็น DateTime
+        period: parseTimestamp(userData["updatedAt"]),  // ✅ แปลง Timestamp เป็น DateTime
       );
-      
-      print("ดึงข้อมูลผู้ใช้สำเร็จ");
+
+      print("ดึงข้อมูลผู้ใช้สำเร็จ: ${user.birthDay}");
       return user;
-      
     } catch (e) {
       print("เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้: $e");
       throw "เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้ กรุณาลองใหม่อีกครั้ง";
     }
-  }
+}
+
 }

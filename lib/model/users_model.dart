@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UsersModel {
   final String? userId;
@@ -28,24 +28,24 @@ class UsersModel {
       'password': password,
       'firstName': firstName,
       'lastName': lastName,
+      'birthDay': Timestamp.fromDate(birthDay!),
       'age': age,
-      "birthDay": birthDay?.toIso8601String(),
-      "period": period?.toIso8601String(),
     };
   }
 
-  factory UsersModel.fromJson(Map<String, dynamic> json) {
+  factory UsersModel.fromSnapshot(DocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>;
     return UsersModel(
-      userId: json["userId"],
-      email: json["email"],
-      firstName: json["firstName"],
-      lastName: json["lastName"],
-      age: json["age"],
-      password: json["password"],
-      birthDay:
-          json["birthDay"] != null ? DateTime.parse(json["birthDay"]) : null,
-      period: json["period"] != null ? DateTime.parse(json["period"]) : null,
+      userId: data['userId'],
+      email: data['email'],
+      password: data['password'],
+      firstName: data['firstName'],
+      lastName: data['lastName'],
+      birthDay: (data['birthDay'] as Timestamp).toDate(),
+      age: data['age'],
+      period: data['period'],
     );
   }
-  String toJsonString() => json.encode(toJson());
+
+  static fromJson(jsonDecode) {}
 }
