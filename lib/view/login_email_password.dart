@@ -1,11 +1,9 @@
 import 'package:fam_care/app_routes.dart';
+import 'package:fam_care/controller/email_login_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:fam_care/controller/email_login_controller.dart';
 import 'package:go_router/go_router.dart';
-
-
 
 class LoginEmailPassword extends StatefulWidget {
   const LoginEmailPassword({super.key});
@@ -15,19 +13,16 @@ class LoginEmailPassword extends StatefulWidget {
 }
 
 class _LoginEmailPasswordState extends State<LoginEmailPassword> {
-  // เข้าถึง controller ที่เตรียมไว้แล้ว
   final EmailLoginController _controller = Get.put(EmailLoginController());
-  
-  // Controller สำหรับ form field
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  
-  // Key สำหรับ form validation
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  
+
   // ตัวแปรสำหรับควบคุมการแสดงรหัสผ่าน
   bool _obscurePassword = true;
-  
+
   @override
   void dispose() {
     // คืนทรัพยากรเมื่อ widget ถูกทำลาย
@@ -46,7 +41,7 @@ class _LoginEmailPasswordState extends State<LoginEmailPassword> {
           _emailController.text.trim(),
           _passwordController.text,
         );
-        
+
         // เช็คว่าการเข้าสู่ระบบสำเร็จหรือไม่โดยตรวจสอบ user ปัจจุบัน
         if (FirebaseAuth.instance.currentUser != null) {
           // ถ้าสำเร็จให้ไปยังหน้าหลักหลังจากเข้าสู่ระบบ
@@ -111,7 +106,7 @@ class _LoginEmailPasswordState extends State<LoginEmailPassword> {
                           ),
                         ),
                         const SizedBox(height: 30),
-                        
+
                         // ฟิลด์กรอกอีเมล
                         TextFormField(
                           controller: _emailController,
@@ -137,7 +132,7 @@ class _LoginEmailPasswordState extends State<LoginEmailPassword> {
                           },
                         ),
                         const SizedBox(height: 20),
-                        
+
                         // ฟิลด์กรอกรหัสผ่าน
                         TextFormField(
                           controller: _passwordController,
@@ -148,7 +143,9 @@ class _LoginEmailPasswordState extends State<LoginEmailPassword> {
                             prefixIcon: const Icon(Icons.lock),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                                _obscurePassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                               ),
                               onPressed: () {
                                 setState(() {
@@ -172,7 +169,7 @@ class _LoginEmailPasswordState extends State<LoginEmailPassword> {
                             return null;
                           },
                         ),
-                        
+
                         // // ลิงก์ลืมรหัสผ่าน
                         // Align(
                         //   alignment: Alignment.centerRight,
@@ -187,28 +184,30 @@ class _LoginEmailPasswordState extends State<LoginEmailPassword> {
                         //   ),
                         // ),
                         const SizedBox(height: 24),
-                        
+
                         // ปุ่มเข้าสู่ระบบ
-                        Obx(() => _controller.isLoading.value
-                          ? const CircularProgressIndicator()
-                          : ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(double.infinity, 50),
-                                backgroundColor: Colors.blue,
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                        Obx(
+                          () => _controller.isLoading.value
+                              ? const CircularProgressIndicator()
+                              : ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize:
+                                        const Size(double.infinity, 50),
+                                    backgroundColor: Colors.blue,
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  onPressed: _handleLogin,
+                                  child: const Text(
+                                    'เข้าสู่ระบบ',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
                                 ),
-                              ),
-                              onPressed: _handleLogin,
-                              child: const Text(
-                                'เข้าสู่ระบบ',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ),
                         ),
                         const SizedBox(height: 24),
-                        
+
                         // ลิงก์ไปยังหน้าลงทะเบียน
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -228,7 +227,7 @@ class _LoginEmailPasswordState extends State<LoginEmailPassword> {
                             ),
                           ],
                         ),
-                        
+
                         // ปุ่มกลับไปหน้าหลัก
                         TextButton.icon(
                           icon: const Icon(Icons.arrow_back),

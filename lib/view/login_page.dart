@@ -17,15 +17,13 @@ class LoginPage extends StatelessWidget {
       try {
         await googleAuthController.googleLoginController();
 
-        await Future.delayed(Duration(milliseconds: 500));
-
         if (googleAuthController.userData.value == null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Login failed. Please try again.')),
           );
         } else {
           if (context.mounted) {
-            context.go(AppRoutes.inputInformationPage);
+            context.go(AppRoutes.homePage);
           }
         }
       } catch (e) {
