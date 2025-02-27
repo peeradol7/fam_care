@@ -1,15 +1,19 @@
+import 'package:fam_care/view/home_page/home_page.dart';
 import 'package:fam_care/view/input_information_page.dart';
-import 'package:fam_care/view/langding_page.dart';
-//import 'package:fam_care/view/login_email_password.dart';
+import 'package:fam_care/view/landing_page/langding_page.dart';
+import 'package:fam_care/view/login_email_password.dart';
 import 'package:fam_care/view/login_page.dart';
 import 'package:fam_care/view/register_page.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRoutes {
   static const String landingPage = '/';
-  static const String loginPage = '/loginpage';
+  static const String loginPage = '/loginPage';
   static const String registerpage = '/register';
+  static const String loginEmailPasswordPage = '/login-email-page';
   static const String inputInformationPage = '/input-information';
+  static const String homePage = '/homePage';
+
   static final GoRouter router = GoRouter(
     initialLocation: landingPage,
     routes: [
@@ -32,7 +36,11 @@ class AppRoutes {
       GoRoute(
         path: inputInformationPage,
         builder: (context, state) => InputInformationPage(),
-      )
+      ),
+      GoRoute(
+        path: homePage,
+        builder: (context, state) => HomePage(),
+      ),
     ],
     debugLogDiagnostics: true,
     redirect: (context, state) {
