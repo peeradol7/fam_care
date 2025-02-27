@@ -11,9 +11,6 @@ class GoogleAuthService {
 
   Future<User?> loginWithGoogle() async {
     try {
-      final isAvailable = await _googleSignIn.isSignedIn();
-      print('Test Google Sign In available: $isAvailable');
-
       await _googleSignIn.signOut();
       await auth.signOut();
 
@@ -27,32 +24,36 @@ class GoogleAuthService {
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
+      final String? idToken = googleAuth.idToken;
+      final String? accessToken = googleAuth.accessToken;
+
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: accessToken,
+        idToken: idToken,
       );
 
       final userCredential = await auth.signInWithCredential(credential);
       final user = userCredential.user;
 
       if (user != null) {
-        final userDoc = await FirebaseFirestore.instance
-            .collection(userCollection)
-            .doc(user.uid)
-            .get();
-        if (!userDoc.exists) {
-          await FirebaseFirestore.instance
+        try {
+          final userData = {
+            'uid': user.uid,
+            'email': user.email ?? '',
+            'displayName': user.displayName ?? '',
+            'photoURL': user.photoURL ?? '',
+          };
+
+          final userDoc = await FirebaseFirestore.instance
               .collection(userCollection)
               .doc(user.uid)
-              .set({
-            'uid': user.uid,
-            'email': user.email,
-            'displayName': user.displayName,
-          });
+              .set(userData, SetOptions(merge: true));
+
+          return user;
+        } catch (firestoreError) {
+          return user;
         }
-        return user;
       } else {
-        print("Google Sign-In failed.");
         return null;
       }
     } catch (e, stackTrace) {
@@ -62,19 +63,28 @@ class GoogleAuthService {
     }
   }
 
-  Future<UsersModel?> fetchUserDataByUserId(String userId) async {
+  Future<UsersModel?> fetchUserDataByUserId(String uid) async {
     try {
-      DocumentSnapshot doc =
-          await _firestore.collection(userCollection).doc(userId).get();
+      final userDoc = await FirebaseFirestore.instance
+          .collection(userCollection)
+          .doc(uid)
+          .get();
 
-      if (doc.exists) {
-        return UsersModel.fromSnapshot(doc);
-      } else {
-        print("User not found!");
+      if (!userDoc.exists || userDoc.data() == null) {
+        print('User document does not exist or is empty');
         return null;
       }
+
+      print('User document data: ${userDoc.data()}');
+
+      final data = userDoc.data()!;
+
+      return UsersModel(
+        userId: data['uid'] ?? uid,
+        email: data['email'] ?? '',
+      );
     } catch (e) {
-      print("Error fetching user data: $e");
+      print('Error fetching user data: $e');
       return null;
     }
   }

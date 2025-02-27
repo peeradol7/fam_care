@@ -2,23 +2,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UsersModel {
   final String? userId;
-  final String email;
+  final String? email;
   final String? password;
-  final String firstName;
-  final String lastName;
-  final DateTime birthDay;
-  final int age;
+  final String? firstName;
+  final String? lastName;
+  final DateTime? birthDay;
+  final int? age;
   final DateTime? period;
 
   UsersModel({
     this.userId,
-    required this.email,
+    this.email,
     this.password,
-    required this.firstName,
-    required this.lastName,
-    required this.birthDay,
-    required this.age,
-    required this.period,
+    this.firstName,
+    this.lastName,
+    this.birthDay,
+    this.age,
+    this.period,
   });
 
   Map<String, dynamic> toJson() {
@@ -28,7 +28,7 @@ class UsersModel {
       'password': password,
       'firstName': firstName,
       'lastName': lastName,
-      'birthDay': Timestamp.fromDate(birthDay),
+      'birthDay': Timestamp.fromDate(birthDay!),
       'age': age,
     };
   }

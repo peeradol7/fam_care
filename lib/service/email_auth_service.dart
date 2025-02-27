@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fam_care/model/users_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'user_service.dart';
-
 class EmailAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -16,7 +14,7 @@ class EmailAuthService {
     try {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
-              email: user.email, password: user.password!);
+              email: user.email!, password: user.password!);
 
       String uid = userCredential.user!.uid;
 
