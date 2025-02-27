@@ -1,54 +1,41 @@
+import 'dart:convert';
+
+import 'package:fam_care/model/users_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedPreferencesService {
-  final SharedPreferences _prefs;
+class SharedPrefercenseService {
+  static const String userKey = "user_data";
 
-  SharedPreferencesService(this._prefs);
-
-  static Future<SharedPreferencesService> getInstance() async {
+  static Future<void> saveUser(UsersModel user) async {
     final prefs = await SharedPreferences.getInstance();
-    return SharedPreferencesService(prefs);
+    final userJson = jsonEncode(user.toJson());
+    await prefs.setString(userKey, userJson);
+    await prefs.setString("userId", user.userId!);
+
+    print('User Saved **** $userKey');
+    print(userJson);
   }
 
-  Map<String, String?> getUserData() {
-    Map<String, String?> userData = {
-      'userId': _prefs.getString('userId'),
-      'email': _prefs.getString('email'),
-      'name': _prefs.getString('name'),
-      'role': _prefs.getString('role'),
-      'address': _prefs.getString('address'),
-      'phoneNumber': _prefs.getString('phoneNumber'),
-    };
+  static Future<UsersModel?> getUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString(userKey);
 
-    print("User Data: $userData");
-
-    return userData;
+    if (userJson == null) return null;
+    return UsersModel.fromJson(jsonDecode(userJson));
   }
 
-  Future<void> saveUserData(
-    String userId,
-    String email,
-    String name,
-    String role,
-    String address,
-    String phoneNumber,
-  ) async {
-    _prefs.setString('userId', userId);
-    _prefs.setString('email', email);
-    _prefs.setString('name', name);
-    _prefs.setString('role', role);
-    _prefs.setString('address', address);
-    _prefs.setString('phoneNumber', phoneNumber);
-
-    print('data Save *** $userId,$name,$address,$role,$phoneNumber');
+  static Future<void> removeUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(userKey);
   }
 
-  Future<void> clearUserData() async {
-    _prefs.remove('userId');
-    _prefs.remove('email');
-    _prefs.remove('name');
-    _prefs.remove('role');
-    _prefs.remove('address');
-    _prefs.remove('phoneNumber');
+  static Future<String?> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString(userKey);
+
+    if (userJson == null) return null;
+
+    final user = UsersModel.fromJson(jsonDecode(userJson));
+    return user.userId;
   }
 }

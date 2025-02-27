@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fam_care/model/users_model.dart';
+import 'package:fam_care/service/shared_prefercense_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -37,17 +38,22 @@ class GoogleAuthService {
 
       if (user != null) {
         try {
-          final userData = {
-            'uid': user.uid,
-            'email': user.email ?? '',
-            'displayName': user.displayName ?? '',
-            'photoURL': user.photoURL ?? '',
-          };
-
-          final userDoc = await FirebaseFirestore.instance
+          UsersModel userModel = UsersModel(
+            userId: user.uid,
+            email: user.email ?? '',
+            firstName: '',
+            lastName: '',
+            age: 1,
+            password: '',
+            birthDay: DateTime.now(),
+            period: DateTime.now(),
+          );
+          _firestore
               .collection(userCollection)
               .doc(user.uid)
-              .set(userData, SetOptions(merge: true));
+              .set(userModel.toJson());
+
+          SharedPrefercenseService.saveUser(userModel);
 
           return user;
         } catch (firestoreError) {
