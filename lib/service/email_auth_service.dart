@@ -9,7 +9,6 @@ class EmailAuthService {
 
   static final String userCollection = 'users';
 
-//ไม่ต้องเซฟ password เข้า firestore แต่passwordจะเซฟให้ทาง Authenแล้ว
   Future<User?> signUpWithEmail(UsersModel user) async {
     try {
       UserCredential userCredential =
@@ -18,27 +17,34 @@ class EmailAuthService {
 
       String uid = userCredential.user!.uid;
 
-      await _firestore.collection(userCollection).doc(uid).set({
-        "userId": uid,
-        "email": user.email,
-        "firstName": user.firstName,
-        "lastName": user.lastName,
-        "age": user.age,
-        "birthDay": user.birthDay,
-        "updatedAt": user.period,
-      });
+      DateTime nextPeriodDate = user.period!.add(Duration(days: 28));
+
+      await _firestore.collection(userCollection).doc(uid).set(
+        {
+          "userId": uid,
+          "email": user.email,
+          "firstName": user.firstName,
+          "lastName": user.lastName,
+          "age": _calculateAge(user.birthDay!),
+          "birthDay": user.birthDay!.toIso8601String(),
+          "period": user.period!.toIso8601String(),
+          "nextPeriodDate": nextPeriodDate.toIso8601String(),
+        },
+      );
+
       print("สมัครสมาชิกสำเร็จ!");
 
       return userCredential.user;
     } on FirebaseAuthException catch (e) {
       String errorMessage;
-      
+
       switch (e.code) {
         case 'email-already-in-use':
           errorMessage = "อีเมลนี้มีผู้ใช้งานแล้ว กรุณาใช้อีเมลอื่น";
           break;
         case 'weak-password':
-          errorMessage = "รหัสผ่านไม่ปลอดภัย กรุณาใช้รหัสผ่านที่มีความยาวอย่างน้อย 6 ตัวอักษร";
+          errorMessage =
+              "รหัสผ่านไม่ปลอดภัย กรุณาใช้รหัสผ่านที่มีความยาวอย่างน้อย 6 ตัวอักษร";
           break;
         case 'invalid-email':
           errorMessage = "รูปแบบอีเมลไม่ถูกต้อง";
@@ -46,25 +52,35 @@ class EmailAuthService {
         default:
           errorMessage = "เกิดข้อผิดพลาดในการลงทะเบียน: ${e.message}";
       }
-      
+
       print(errorMessage);
-      throw errorMessage; // ส่งข้อความกลับไปให้ controller จัดการ
+      throw errorMessage;
     } catch (e) {
       print("เกิดข้อผิดพลาด: $e");
       throw "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง";
     }
-}
+  }
+
+  int _calculateAge(DateTime birthDate) {
+    DateTime today = DateTime.now();
+    int age = today.year - birthDate.year;
+    if (today.month < birthDate.month ||
+        (today.month == birthDate.month && today.day < birthDate.day)) {
+      age--;
+    }
+    return age;
+  }
 
   Future<User?> signIn(String email, String password) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      
+
       print("เข้าสู่ระบบสำเร็จ!");
       return userCredential.user;
     } on FirebaseAuthException catch (e) {
       String errorMessage;
-      
+
       switch (e.code) {
         case 'user-not-found':
           errorMessage = "ไม่พบผู้ใช้งานนี้ในระบบ";
@@ -84,16 +100,15 @@ class EmailAuthService {
         default:
           errorMessage = "เกิดข้อผิดพลาดในการเข้าสู่ระบบ: ${e.message}";
       }
-      
-        print(errorMessage);
-        throw errorMessage;
-      } catch (e) {
-        print("เกิดข้อผิดพลาด: $e");
-        throw "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง";
-      }
+
+      print(errorMessage);
+      throw errorMessage;
+    } catch (e) {
+      print("เกิดข้อผิดพลาด: $e");
+      throw "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง";
     }
-     
-     
+  }
+
   Future<UsersModel?> getUserData(String uid) async {
     try {
       User? currentUser = _auth.currentUser;
@@ -126,9 +141,10 @@ class EmailAuthService {
         email: userData["email"] ?? "",
         firstName: userData["firstName"] ?? "",
         lastName: userData["lastName"] ?? "",
-        age: userData["age"] ?? 0,
-        birthDay: parseTimestamp(userData["birthDay"]),  // ✅ แปลง Timestamp เป็น DateTime
-        period: parseTimestamp(userData["updatedAt"]),  // ✅ แปลง Timestamp เป็น DateTime
+        birthDay: parseTimestamp(
+            userData["birthDay"]), // ✅ แปลง Timestamp เป็น DateTime
+        period: parseTimestamp(
+            userData["updatedAt"]), // ✅ แปลง Timestamp เป็น DateTime
       );
 
       print("ดึงข้อมูลผู้ใช้สำเร็จ: ${user.birthDay}");
@@ -137,6 +153,5 @@ class EmailAuthService {
       print("เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้: $e");
       throw "เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้ กรุณาลองใหม่อีกครั้ง";
     }
-}
-
+  }
 }

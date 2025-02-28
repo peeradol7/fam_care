@@ -2,7 +2,6 @@ import 'package:fam_care/controller/email_login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../model/users_model.dart';
 
@@ -17,73 +16,36 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController ageController = TextEditingController();
-  final TextEditingController birthDayController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController birthDateController = TextEditingController();
+  final TextEditingController periodDateController = TextEditingController();
 
-  final Rxn<DateTime> selectedDate = Rxn<DateTime>();
+  DateTime? _birthDate;
+  DateTime? _periodDate;
 
   @override
   void initState() {
     super.initState();
-
-    ageController.addListener(() {
-      int? age = int.tryParse(ageController.text.trim());
-      if (age != null && age > 0) {
-        setState(() {
-          selectedDate.value =
-              DateTime.now().subtract(Duration(days: age * 365));
-          birthDayController.text =
-              DateFormat('dd/MM/yyyy').format(selectedDate.value!);
-        });
-      }
-    });
-
-    // Listener เมื่อผู้ใช้กรอกวันเกิด
-    birthDayController.addListener(() {
-      try {
-        DateTime birthDate =
-            DateFormat('dd/MM/yyyy').parse(birthDayController.text.trim());
-        setState(() {
-          selectedDate.value = birthDate;
-          int calculatedAge = DateTime.now().year - birthDate.year;
-          ageController.text = calculatedAge.toString();
-        });
-      } catch (e) {
-        // ถ้ากรอกไม่ถูก format จะไม่ทำอะไร
-      }
-    });
+    birthDateController.text = "";
+    periodDateController.text = "";
   }
 
   void _register() {
+    if (_birthDate == null || _periodDate == null) {
+      Get.snackbar("ผิดพลาด", "กรุณาเลือกวันเกิดและวันเป็นประจำเดือน");
+      return;
+    }
+
     UsersModel user = UsersModel(
       email: emailController.text.trim(),
       firstName: firstNameController.text.trim(),
       lastName: lastNameController.text.trim(),
       password: passwordController.text.trim(),
-      age: int.tryParse(ageController.text.trim()) ?? 0,
-      birthDay: selectedDate.value,
-      period: null,
+      birthDay: _birthDate,
+      period: _periodDate,
     );
 
-    authController.signUp(user);
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate.value ?? DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
-
-    if (picked != null) {
-      setState(() {
-        selectedDate.value = picked;
-        birthDayController.text = DateFormat('dd/MM/yyyy').format(picked);
-        ageController.text = (DateTime.now().year - picked.year).toString();
-      });
-    }
+    authController.emailSignUpController(user);
   }
 
   @override
@@ -91,9 +53,9 @@ class _RegisterPageState extends State<RegisterPage> {
     emailController.dispose();
     firstNameController.dispose();
     lastNameController.dispose();
-    ageController.dispose();
-    birthDayController.dispose();
     passwordController.dispose();
+    birthDateController.dispose();
+    periodDateController.dispose();
     super.dispose();
   }
 
@@ -103,49 +65,84 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         title: Text('Register'),
         leading: IconButton(
-            onPressed: () {
-              context.pop();
-            },
-            icon: Icon(Icons.arrow_back_ios)),
-        actions: [],
+          onPressed: () {
+            context.pop();
+          },
+          icon: Icon(Icons.arrow_back_ios),
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.all(20),
         child: Column(
           children: [
             TextField(
-                controller: emailController,
-                decoration: InputDecoration(labelText: 'Email')),
-            TextField(
-                controller: firstNameController,
-                decoration: InputDecoration(labelText: 'First Name')),
-            TextField(
-                controller: lastNameController,
-                decoration: InputDecoration(labelText: 'Last Name')),
-            TextField(
-                controller: ageController,
-                decoration: InputDecoration(labelText: 'Age'),
-                keyboardType: TextInputType.number),
-            TextField(
-              controller: birthDayController,
-              decoration: InputDecoration(
-                labelText: 'Birth Day',
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.calendar_today),
-                  onPressed: () => _selectDate(context),
-                ),
-              ),
-              readOnly: true,
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'อีเมล'),
             ),
             TextField(
-                controller: passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
-                obscureText: true),
+              controller: firstNameController,
+              decoration: InputDecoration(labelText: 'ชื่อจริง'),
+            ),
+            TextField(
+              controller: lastNameController,
+              decoration: InputDecoration(labelText: 'นามสกุล'),
+            ),
+            TextFormField(
+              controller: birthDateController,
+              decoration: InputDecoration(labelText: 'Birth Date'),
+              readOnly: true,
+              onTap: () async {
+                DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(1900),
+                  lastDate: DateTime.now(),
+                );
+
+                if (pickedDate != null) {
+                  setState(
+                    () {
+                      _birthDate = pickedDate;
+                      birthDateController.text =
+                          "${_birthDate!.toLocal()}".split(' ')[0];
+                    },
+                  );
+                }
+              },
+            ),
+            TextFormField(
+              controller: periodDateController,
+              decoration: InputDecoration(labelText: 'Period Date'),
+              readOnly: true,
+              onTap: () async {
+                DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(1900),
+                  lastDate: DateTime.now(),
+                );
+
+                if (pickedDate != null) {
+                  setState(() {
+                    _periodDate = pickedDate;
+                    periodDateController.text =
+                        "${_periodDate!.toLocal()}".split(' ')[0];
+                  });
+                }
+              },
+            ),
+            TextField(
+              controller: passwordController,
+              decoration: InputDecoration(labelText: 'Password'),
+              obscureText: true,
+            ),
             SizedBox(height: 20),
             Obx(() => authController.isLoading.value
                 ? CircularProgressIndicator()
                 : ElevatedButton(
-                    onPressed: _register, child: Text('Register'))),
+                    onPressed: _register,
+                    child: Text('Register'),
+                  )),
           ],
         ),
       ),

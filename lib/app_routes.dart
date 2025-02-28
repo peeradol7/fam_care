@@ -3,6 +3,7 @@ import 'package:fam_care/view/input_information_page.dart';
 import 'package:fam_care/view/landing_page/langding_page.dart';
 import 'package:fam_care/view/login_page/login_page.dart';
 import 'package:fam_care/view/register_page.dart';
+import 'package:fam_care/view/test.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRoutes {
@@ -12,6 +13,7 @@ class AppRoutes {
   static const String loginEmailPasswordPage = '/login-email-page';
   static const String inputInformationPage = '/input-information';
   static const String homePage = '/homePage';
+  static const String test = '/test';
 
   static final GoRouter router = GoRouter(
     initialLocation: landingPage,
@@ -39,6 +41,10 @@ class AppRoutes {
       GoRoute(
         path: homePage,
         builder: (context, state) => HomeScreen(),
+      ),
+      GoRoute(
+        path: test,
+        builder: (context, state) => BirthDateForm(),
       ),
     ],
     debugLogDiagnostics: true,

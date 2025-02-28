@@ -101,28 +101,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('ชื่อ-นามสกุล',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                                const Text(
+                                  'ชื่อ-นามสกุล',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                                 Text('${user.firstName} ${user.lastName}'),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          const Icon(Icons.calendar_today),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text('อายุ',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                Text('${user.age} ปี'),
                               ],
                             ),
                           ),

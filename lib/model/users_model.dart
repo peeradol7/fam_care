@@ -7,7 +7,6 @@ class UsersModel {
   final String? firstName;
   final String? lastName;
   final DateTime? birthDay;
-  final int? age;
   final DateTime? period;
 
   UsersModel({
@@ -17,7 +16,6 @@ class UsersModel {
     this.firstName,
     this.lastName,
     this.birthDay,
-    this.age,
     this.period,
   });
 
@@ -30,7 +28,6 @@ class UsersModel {
       'lastName': lastName,
       'birthDay': birthDay?.toIso8601String(),
       'period': period?.toIso8601String(),
-      'age': age,
     };
   }
 
@@ -40,7 +37,6 @@ class UsersModel {
       email: json['email'] ?? '',
       firstName: json['firstName'] ?? '',
       lastName: json['lastName'] ?? '',
-      age: json['age'] ?? 0,
       password: json['password'] ?? '',
       birthDay: json['birthDay'] is Timestamp
           ? (json['birthDay'] as Timestamp).toDate()
@@ -60,7 +56,6 @@ class UsersModel {
       firstName: data['firstName'],
       lastName: data['lastName'],
       birthDay: (data['birthDay'] as Timestamp).toDate(),
-      age: data['age'],
       period: data['period'],
     );
   }

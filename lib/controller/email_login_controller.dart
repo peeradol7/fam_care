@@ -9,10 +9,11 @@ import 'package:go_router/go_router.dart';
 
 class EmailLoginController extends GetxController {
   final EmailAuthService authService = EmailAuthService();
+
   var isLoading = false.obs;
   var userData = Rxn<UsersModel?>(null);
 
-  Future<void> signUp(UsersModel userModel) async {
+  Future<void> emailSignUpController(UsersModel userModel) async {
     isLoading.value = true;
     try {
       User? userCredential = await authService.signUpWithEmail(userModel);
@@ -32,28 +33,18 @@ class EmailLoginController extends GetxController {
       String email, String password, BuildContext context) async {
     isLoading.value = true;
     try {
-      // เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน
       User? userCredential = await authService.signIn(email, password);
 
       if (userCredential != null) {
-        // ดึงข้อมูลผู้ใช้และเก็บไว้ใน userData
         UsersModel? user = await authService.getUserData(userCredential.uid);
         userData.value = user;
 
-        // แสดงข้อความแจ้งเตือนการเข้าสู่ระบบสำเร็จ
-        Get.snackbar("สำเร็จ", "เข้าสู่ระบบเรียบร้อย!",
-            backgroundColor: Colors.green.withOpacity(0.7),
-            colorText: Colors.white);
-
-        // นำทางไปยังหน้า Home ด้วย GoRouter
         if (context.mounted) {
           context.go(AppRoutes.homePage);
         }
       }
     } catch (e) {
-      Get.snackbar("ผิดพลาด", e.toString(),
-          backgroundColor: Colors.red.withOpacity(0.7),
-          colorText: Colors.white);
+      print('Error $e');
     } finally {
       isLoading.value = false;
     }

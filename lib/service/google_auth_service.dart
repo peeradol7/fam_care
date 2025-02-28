@@ -43,7 +43,6 @@ class GoogleAuthService {
             email: user.email ?? '',
             firstName: '',
             lastName: '',
-            age: 1,
             password: '',
             birthDay: DateTime.now(),
             period: DateTime.now(),
