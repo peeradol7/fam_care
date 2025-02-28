@@ -1,5 +1,5 @@
 import 'package:fam_care/view/home_page/home_page.dart';
-import 'package:fam_care/view/input_information_page.dart';
+import 'package:fam_care/view/home_page/profile_page/profile_page.dart';
 import 'package:fam_care/view/landing_page/langding_page.dart';
 import 'package:fam_care/view/login_page/login_page.dart';
 import 'package:fam_care/view/register_page.dart';
@@ -14,6 +14,7 @@ class AppRoutes {
   static const String inputInformationPage = '/input-information';
   static const String homePage = '/homePage';
   static const String test = '/test';
+  static const String profilePage = '/profile';
 
   static final GoRouter router = GoRouter(
     initialLocation: landingPage,
@@ -34,10 +35,7 @@ class AppRoutes {
       //   path: loginEmailPasswordPage,
       //   builder: (context, state) => LoginEmailPassword(),
       // ),
-      GoRoute(
-        path: inputInformationPage,
-        builder: (context, state) => InputInformationPage(),
-      ),
+
       GoRoute(
         path: homePage,
         builder: (context, state) => HomeScreen(),
@@ -45,6 +43,13 @@ class AppRoutes {
       GoRoute(
         path: test,
         builder: (context, state) => BirthDateForm(),
+      ),
+      GoRoute(
+        path: '$profilePage/:userId',
+        builder: (context, state) {
+          final userId = state.pathParameters['userId'] ?? '';
+          return ProfilePage(userId: userId);
+        },
       ),
     ],
     debugLogDiagnostics: true,

@@ -1,7 +1,9 @@
+import 'package:fam_care/app_routes.dart';
 import 'package:fam_care/controller/user_controller.dart';
 import 'package:fam_care/view/home_page/widget/logout_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -131,7 +133,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               ],
                             ),
                           ),
-                          IconButton(onPressed: () {}, icon: Icon(Icons.edit))
+                          IconButton(
+                              onPressed: () {
+                                final route = AppRoutes.profilePage;
+                                final userId = user.userId;
+                                context.push('$route/$userId');
+                              },
+                              icon: Icon(Icons.edit))
                         ],
                       ),
                     ],

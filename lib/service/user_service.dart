@@ -42,23 +42,7 @@ class UserService {
 
       final data = userDoc.data()!;
 
-      return UsersModel(
-        userId: data['uid'] ?? uid,
-        email: data['email'] ?? '',
-        password: data['password'] ?? '',
-        firstName: data['firstName'] ?? '',
-        lastName: data['lastName'] ?? '',
-        birthDay: data['birthDay'] is Timestamp
-            ? (data['birthDay'] as Timestamp).toDate()
-            : (data['birthDay'] is String
-                ? DateTime.tryParse(data['birthDay'])
-                : null),
-        period: data['period'] is Timestamp
-            ? (data['period'] as Timestamp).toDate()
-            : (data['period'] is String
-                ? DateTime.tryParse(data['period'])
-                : null),
-      );
+      return UsersModel.fromJson(data);
     } catch (e) {
       print('Error fetching user data: $e');
       return null;

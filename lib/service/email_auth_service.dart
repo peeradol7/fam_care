@@ -141,6 +141,7 @@ class EmailAuthService {
         lastName: userData["lastName"] ?? "",
         birthDay: parseTimestamp(userData["birthDay"]),
         period: parseTimestamp(userData["period"]),
+        authMethod: 'email',
       );
 
       return user;

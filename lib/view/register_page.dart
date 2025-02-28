@@ -43,6 +43,7 @@ class _RegisterPageState extends State<RegisterPage> {
       password: passwordController.text.trim(),
       birthDay: _birthDate,
       period: _periodDate,
+      authMethod: 'email',
     );
 
     authController.emailSignUpController(user);

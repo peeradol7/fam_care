@@ -6,6 +6,7 @@ class UsersModel {
   final String? password;
   final String? firstName;
   final String? lastName;
+  final String authMethod;
   final DateTime? birthDay;
   final DateTime? period;
 
@@ -13,6 +14,7 @@ class UsersModel {
     this.userId,
     this.email,
     this.password,
+    required this.authMethod,
     this.firstName,
     this.lastName,
     this.birthDay,
@@ -28,6 +30,7 @@ class UsersModel {
       'lastName': lastName,
       'birthDay': birthDay?.toIso8601String(),
       'period': period?.toIso8601String(),
+      'authMethod': authMethod,
     };
   }
 
@@ -49,6 +52,7 @@ class UsersModel {
               ? (json['period'] as Timestamp).toDate()
               : DateTime.tryParse(json['period'] ?? '') ??
                   DateTime(2000, 1, 1)),
+      authMethod: json['authMethod'],
     );
   }
 
@@ -62,6 +66,7 @@ class UsersModel {
       lastName: data['lastName'],
       birthDay: (data['birthDay'] as Timestamp).toDate(),
       period: data['period'],
+      authMethod: data['authMethod'],
     );
   }
 }

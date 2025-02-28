@@ -4,17 +4,31 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfilePage extends StatelessWidget {
-  ProfilePage({super.key});
+  final String userId;
+
+  ProfilePage({
+    super.key,
+    required this.userId,
+  });
+
   final UserController userController = UserController();
   @override
   Widget build(BuildContext context) {
+    userController.fetchUserDataById(userId);
     return Scaffold(
       body: Center(
         child: TextButton(
-            onPressed: () {
-              context.pop();
-            },
-            child: Obx(() => Text('${userController.userData.value!.userId}'))),
+          onPressed: () {
+            context.pop();
+          },
+          child: Obx(
+            () => Text(
+              userController.userData.value != null
+                  ? '${userController.userData.value!.userId}'
+                  : 'Loading...',
+            ),
+          ),
+        ),
       ),
     );
   }

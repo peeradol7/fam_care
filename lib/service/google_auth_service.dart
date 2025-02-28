@@ -46,6 +46,7 @@ class GoogleAuthService {
             password: '',
             birthDay: null,
             period: null,
+            authMethod: 'google',
           );
           _firestore
               .collection(userCollection)
