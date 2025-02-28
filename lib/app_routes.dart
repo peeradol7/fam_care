@@ -14,7 +14,7 @@ class AppRoutes {
   static const String inputInformationPage = '/input-information';
   static const String homePage = '/homePage';
   static const String test = '/test';
-  static const String profilePage = '/profile';
+  static const String profilePage = '/edit-profile';
 
   static final GoRouter router = GoRouter(
     initialLocation: landingPage,
