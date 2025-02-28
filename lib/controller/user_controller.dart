@@ -12,12 +12,13 @@ class UserController extends GetxController {
 
   RxBool isLoading = false.obs;
 
-  Future<bool> loadUserDataInitState() async {
-    Future<UsersModel?> userData = SharedPrefercenseService.getUser();
-    if (userData != null) {
-      return true;
+  Future<void> loadUserFromPrefs() async {
+    isLoading.value = true;
+    final user = await SharedPrefercenseService.getUser();
+    if (user != null) {
+      userData.value = user;
     }
-    return false;
+    isLoading.value = false;
   }
 
   Future<void> fetchUserDataById(String userId) async {

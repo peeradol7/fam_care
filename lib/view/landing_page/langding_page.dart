@@ -8,11 +8,21 @@ import 'package:go_router/go_router.dart';
 class LandingPage extends StatelessWidget {
   LandingPage({super.key});
   final UserController userController = Get.find<UserController>();
+
   @override
   Widget build(BuildContext context) {
+    Future<bool> _checkUserData() async {
+      final userData = await SharedPrefercenseService.getUser();
+      if (userData != null) {
+        Future.microtask(() => context.go(AppRoutes.homePage));
+        return true;
+      }
+      return false;
+    }
+
     return Scaffold(
       body: FutureBuilder<bool>(
-        future: userController.loadUserDataInitState(),
+        future: _checkUserData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -22,20 +32,11 @@ class LandingPage extends StatelessWidget {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
 
-          if (snapshot.hasData && snapshot.data == true) {
-            SharedPrefercenseService.getUser().then((userData) {
-              print('userData : $userData');
-              if (userData != null) {
-                Future.microtask(() => context.go(AppRoutes.homePage));
-              }
-            });
-          }
-
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Welcome to FamCare',
                   style: TextStyle(
                     fontSize: 24,
@@ -43,12 +44,6 @@ class LandingPage extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 20),
-                // Image.asset(
-                //   'assets/images/famcare_logo.png',
-                //   height: 150,
-                //   width: 150,
-                // ),
                 const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -61,7 +56,7 @@ class LandingPage extends StatelessWidget {
                       onPressed: () {
                         context.push(AppRoutes.loginPage);
                       },
-                      child: Text(
+                      child: const Text(
                         'Login',
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),

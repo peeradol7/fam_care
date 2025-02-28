@@ -12,10 +12,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final UserController _controller = Get.find<UserController>();
+  final UserController _controller = Get.put(UserController());
+
   @override
   void initState() {
     super.initState();
+    _controller.loadUserFromPrefs();
   }
 
   @override
@@ -27,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {
+            onPressed: () async {
               showDialog(
                 context: context,
                 builder: (context) => LogoutDialogWidget(),
@@ -85,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 const Text('อีเมล',
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold)),
-                                Text(user.email.toString()),
+                                Text(user.email!),
                               ],
                             ),
                           ),
@@ -136,7 +138,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 32),
             ],
           ),
         );
