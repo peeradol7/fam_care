@@ -1,8 +1,7 @@
-import 'package:fam_care/app_routes.dart';
-import 'package:fam_care/controller/email_login_controller.dart';
+import 'package:fam_care/controller/user_controller.dart';
+import 'package:fam_care/view/home_page/widget/logout_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,12 +12,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final EmailLoginController _controller = Get.find<EmailLoginController>();
-
+  final UserController _controller = Get.find<UserController>();
   @override
   void initState() {
     super.initState();
-    _controller.getCurrentUser();
   }
 
   @override
@@ -31,8 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              _controller.signOut(context);
-              context.go(AppRoutes.landingPage);
+              showDialog(
+                context: context,
+                builder: (context) => LogoutDialogWidget(),
+              );
             },
             tooltip: 'ออกจากระบบ',
           ),
@@ -130,6 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ],
                             ),
                           ),
+                          IconButton(onPressed: () {}, icon: Icon(Icons.edit))
                         ],
                       ),
                     ],

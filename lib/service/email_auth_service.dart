@@ -127,7 +127,6 @@ class EmailAuthService {
 
       Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
 
-      // ฟังก์ชันช่วยแปลง Timestamp เป็น DateTime
       DateTime? parseTimestamp(dynamic value) {
         if (value is Timestamp) {
           return value.toDate();
@@ -135,19 +134,15 @@ class EmailAuthService {
         return null;
       }
 
-      // ดึงข้อมูลและแปลงค่า birthDay และ updatedAt
       UsersModel user = UsersModel(
         userId: userData["userId"] ?? "",
         email: userData["email"] ?? "",
         firstName: userData["firstName"] ?? "",
         lastName: userData["lastName"] ?? "",
-        birthDay: parseTimestamp(
-            userData["birthDay"]), // ✅ แปลง Timestamp เป็น DateTime
-        period: parseTimestamp(
-            userData["updatedAt"]), // ✅ แปลง Timestamp เป็น DateTime
+        birthDay: parseTimestamp(userData["birthDay"]),
+        period: parseTimestamp(userData["period"]),
       );
 
-      print("ดึงข้อมูลผู้ใช้สำเร็จ: ${user.birthDay}");
       return user;
     } catch (e) {
       print("เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้: $e");

@@ -44,8 +44,8 @@ class GoogleAuthService {
             firstName: '',
             lastName: '',
             password: '',
-            birthDay: DateTime.now(),
-            period: DateTime.now(),
+            birthDay: null,
+            period: null,
           );
           _firestore
               .collection(userCollection)
@@ -66,36 +66,6 @@ class GoogleAuthService {
       print('Stack trace: $stackTrace');
       return null;
     }
-  }
-
-  Future<UsersModel?> fetchUserDataByUserId(String uid) async {
-    try {
-      final userDoc = await FirebaseFirestore.instance
-          .collection(userCollection)
-          .doc(uid)
-          .get();
-
-      if (!userDoc.exists || userDoc.data() == null) {
-        print('User document does not exist or is empty');
-        return null;
-      }
-
-      print('User document data: ${userDoc.data()}');
-
-      final data = userDoc.data()!;
-
-      return UsersModel(
-        userId: data['uid'] ?? uid,
-        email: data['email'] ?? '',
-      );
-    } catch (e) {
-      print('Error fetching user data: $e');
-      return null;
-    }
-  }
-
-  User? getCurrentUser() {
-    return auth.currentUser;
   }
 
   Future<void> signOut() async {

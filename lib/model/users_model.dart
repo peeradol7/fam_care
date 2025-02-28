@@ -38,12 +38,17 @@ class UsersModel {
       firstName: json['firstName'] ?? '',
       lastName: json['lastName'] ?? '',
       password: json['password'] ?? '',
-      birthDay: json['birthDay'] is Timestamp
-          ? (json['birthDay'] as Timestamp).toDate()
-          : DateTime.parse(json['birthDay']),
-      period: json['period'] is Timestamp
-          ? (json['period'] as Timestamp).toDate()
-          : DateTime.parse(json['period']),
+      birthDay: json['birthDay'] == null
+          ? null
+          : (json['birthDay'] is Timestamp
+              ? (json['birthDay'] as Timestamp).toDate()
+              : DateTime.tryParse(json['birthDay']) ?? DateTime(2000, 1, 1)),
+      period: json['period'] == null
+          ? null
+          : (json['period'] is Timestamp
+              ? (json['period'] as Timestamp).toDate()
+              : DateTime.tryParse(json['period'] ?? '') ??
+                  DateTime(2000, 1, 1)),
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:fam_care/app_routes.dart';
+import 'package:fam_care/controller/user_controller.dart';
 import 'package:fam_care/view/login_page/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final GoogleAuthController googleAuthController =
       Get.find<GoogleAuthController>();
+  final UserController userController = Get.find<UserController>();
   final TextEditingController _emailTextController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -33,11 +35,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> googleHandleLogin() async {
-    if (googleAuthController.userData.value == null) {
+    if (userController.userData.value == null) {
       CircularProgressIndicator();
       await googleAuthController.googleLoginController();
+      print('Data Value : ${userController.userData.value?.userId}');
     }
-    if (googleAuthController.userData.value != null) {
+    if (userController.userData.value != null) {
+      print('Data Value : ${userController.userData.value!.userId}');
       context.go(AppRoutes.homePage);
     }
   }

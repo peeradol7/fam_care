@@ -4,12 +4,12 @@ import 'package:fam_care/model/users_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefercenseService {
-  static const String userKey = "user_data";
+  static const String? userKey = "user_data";
 
   static Future<void> saveUser(UsersModel user) async {
     final prefs = await SharedPreferences.getInstance();
     final userJson = jsonEncode(user.toJson());
-    await prefs.setString(userKey, userJson);
+    await prefs.setString(userKey!, userJson);
     await prefs.setString("userId", user.userId!);
 
     print('User Saved **** $userKey');
@@ -17,7 +17,7 @@ class SharedPrefercenseService {
 
   static Future<UsersModel?> getUser() async {
     final prefs = await SharedPreferences.getInstance();
-    final userJson = prefs.getString(userKey);
+    final userJson = prefs.getString(userKey!);
 
     if (userJson == null) return null;
     return UsersModel.fromJson(jsonDecode(userJson));
@@ -25,12 +25,12 @@ class SharedPrefercenseService {
 
   static Future<void> removeUser() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(userKey);
+    await prefs.remove(userKey!);
   }
 
   static Future<String?> getUserId() async {
     final prefs = await SharedPreferences.getInstance();
-    final userJson = prefs.getString(userKey);
+    final userJson = prefs.getString(userKey!);
 
     if (userJson == null) return null;
 

@@ -44,11 +44,11 @@ class LandingPage extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                Image.asset(
-                  'assets/images/famcare_logo.png',
-                  height: 150,
-                  width: 150,
-                ),
+                // Image.asset(
+                //   'assets/images/famcare_logo.png',
+                //   height: 150,
+                //   width: 150,
+                // ),
                 const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32.0),

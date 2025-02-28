@@ -19,6 +19,7 @@ void main() async {
   Get.put(GoogleAuthController());
   Get.put(UserController());
   Get.put(EmailLoginController());
+
   runApp(const MyApp());
 }
 
