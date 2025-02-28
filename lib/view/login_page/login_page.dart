@@ -1,8 +1,11 @@
+import 'package:fam_care/app_routes.dart';
+import 'package:fam_care/view/login_page/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import '../controller/email_login_controller.dart';
-import '../controller/google_auth_controller.dart'; // เพิ่ม controller สำหรับ Google Login
+
+import '../../controller/email_login_controller.dart';
+import '../../controller/google_auth_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -12,8 +15,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final EmailLoginController _emailController = Get.put(EmailLoginController());
-  final GoogleAuthController _googleController = Get.put(GoogleAuthController()); // เรียกใช้ controller ที่มีอยู่แล้ว
+  CustomButton customButton = CustomButton();
+  final EmailLoginController _emailController =
+      Get.find<EmailLoginController>();
+
+  final GoogleAuthController googleAuthController =
+      Get.find<GoogleAuthController>();
   final TextEditingController _emailTextController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -25,13 +32,19 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  Future<void> googleHandleLogin() async {
+    if (googleAuthController.userData.value == null) {
+      CircularProgressIndicator();
+      await googleAuthController.googleLoginController();
+    }
+    if (googleAuthController.userData.value != null) {
+      context.go(AppRoutes.homePage);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('เข้าสู่ระบบ'),
-        centerTitle: true,
-      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -47,14 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 color: Colors.blue,
               ),
               const SizedBox(height: 16),
-              const Text(
-                'ยินดีต้อนรับกลับมา',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+
               const SizedBox(height: 8),
               const Text(
                 'กรุณาเข้าสู่ระบบเพื่อใช้งานแอปพลิเคชัน',
@@ -65,8 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-              
-              // ส่วนฟอร์มเข้าสู่ระบบด้วย Email/Password
+
               Form(
                 key: _formKey,
                 child: Column(
@@ -91,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // ฟิลด์กรอกรหัสผ่าน
                     TextFormField(
                       controller: _passwordController,
@@ -112,56 +117,54 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     const SizedBox(height: 8),
-                    
-                    // ลิงก์ลืมรหัสผ่าน
+
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {
-                          // TODO: นำทางไปยังหน้าลืมรหัสผ่าน
-                          Get.snackbar(
-                            'แจ้งเตือน',
-                            'ฟีเจอร์นี้ยังไม่เปิดให้ใช้งาน',
-                            backgroundColor: Colors.orange.withOpacity(0.7),
-                            colorText: Colors.white,
-                          );
-                        },
+                        onPressed: () {},
                         child: const Text('ลืมรหัสผ่าน?'),
                       ),
                     ),
                     const SizedBox(height: 16),
-                    
-                    // ปุ่มเข้าสู่ระบบด้วย Email/Password
-                    Obx(() => ElevatedButton(
-                      onPressed: _emailController.isLoading.value
-                          ? null
-                          : () {
-                              if (_formKey.currentState!.validate()) {
-                                _emailController.signIn(
-                                  _emailTextController.text,
-                                  _passwordController.text,
-                                  context,
-                                );
-                              }
-                            },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50),
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
+
+                    Obx(
+                      () => ElevatedButton(
+                        onPressed: _emailController.isLoading.value
+                            ? null
+                            : () {
+                                if (_formKey.currentState!.validate()) {
+                                  _emailController.signIn(
+                                    _emailTextController.text,
+                                    _passwordController.text,
+                                    context,
+                                  );
+                                }
+                              },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(50),
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
+                        ),
+                        child: _emailController.isLoading.value
+                            ? const CircularProgressIndicator(
+                                color: Colors.white)
+                            : const Text(
+                                'เข้าสู่ระบบด้วยอีเมล',
+                                style: TextStyle(fontSize: 16),
+                              ),
                       ),
-                      child: _emailController.isLoading.value
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text(
-                              'เข้าสู่ระบบด้วยอีเมล',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                    )),
+                    ),
                   ],
                 ),
               ),
               const SizedBox(height: 24),
-              
-              // ตัวแบ่งระหว่างการเข้าสู่ระบบด้วย Email และ Google
+              customButton.btnSignUp(
+                  iconPath: 'assets/icons/google.png',
+                  onPressed: () {
+                    googleHandleLogin();
+                  },
+                  label: 'เข้าสู่ระบบด้วย Google '),
+
               const Row(
                 children: [
                   Expanded(child: Divider()),
@@ -176,47 +179,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               const SizedBox(height: 24),
-              
-              // // ปุ่มเข้าสู่ระบบด้วย Google
-              // Obx(() => ElevatedButton.icon(
-              //   onPressed: _googleController.isLoading.value
-              //       ? null
-              //       : () => _googleController.googleLogin(context),
-              //   icon: _googleController.isLoading.value
-              //       ? const SizedBox(
-              //           width: 24,
-              //           height: 24,
-              //           child: CircularProgressIndicator(
-              //             strokeWidth: 2,
-              //             color: Colors.red,
-              //           ),
-              //         )
-              //       : Image.asset(
-              //           'assets/images/google_logo.png',
-              //           height: 24,
-              //           width: 24,
-              //         ),
-              //   label: const Text(
-              //     'เข้าสู่ระบบด้วย Google',
-              //     style: TextStyle(fontSize: 16),
-              //   ),
-              //   style: ElevatedButton.styleFrom(
-              //     minimumSize: const Size.fromHeight(50),
-              //     backgroundColor: Colors.white,
-              //     foregroundColor: Colors.black87,
-              //     side: const BorderSide(color: Colors.grey),
-              //   ),
-              // )),
-              const SizedBox(height: 24),
-              
-              // ลิงก์ไปยังหน้าสมัครสมาชิก
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text('ยังไม่มีบัญชี?'),
                   TextButton(
                     onPressed: () {
-                      context.go('/register');
+                      context.push(AppRoutes.registerpage);
                     },
                     child: const Text('สมัครสมาชิก'),
                   ),

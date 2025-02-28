@@ -1,9 +1,9 @@
+import 'package:fam_care/app_routes.dart';
 import 'package:fam_care/controller/email_login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -18,7 +18,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // ดึงข้อมูลผู้ใช้เมื่อเปิดหน้าจอ
     _controller.getCurrentUser();
   }
 
@@ -31,7 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () => _controller.signOut(context),
+            onPressed: () {
+              _controller.signOut(context);
+              context.go(AppRoutes.landingPage);
+            },
             tooltip: 'ออกจากระบบ',
           ),
         ],
@@ -50,7 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
 
-        // แสดงข้อมูลผู้ใช้ที่ login แล้ว
         final user = _controller.userData.value!;
         return Padding(
           padding: const EdgeInsets.all(16.0),
@@ -65,67 +66,94 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              
-              Card(
-                elevation: 4,
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      // อีเมลผู้ใช้
-                      ListTile(
-                        leading: const Icon(Icons.email),
-                        title: const Text('อีเมล'),
-                        subtitle: Text(user.email.toString()),
+                      Row(
+                        children: [
+                          const Icon(Icons.email),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('อีเมล',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                Text(user.email.toString()),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      
-                      const Divider(),
-                      
-                      // ชื่อผู้ใช้
-                      ListTile(
-                        leading: const Icon(Icons.person),
-                        title: const Text('ชื่อ-นามสกุล'),
-                        subtitle: Text('${user.firstName} ${user.lastName}'),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          const Icon(Icons.person),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('ชื่อ-นามสกุล',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                Text('${user.firstName} ${user.lastName}'),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      
-                      const Divider(),
-                      
-                      // อายุ
-                      ListTile(
-                        leading: const Icon(Icons.calendar_today),
-                        title: const Text('อายุ'),
-                        subtitle: Text('${user.age} ปี'),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          const Icon(Icons.calendar_today),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('อายุ',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                Text('${user.age} ปี'),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      
-                      const Divider(),
-                      
-                      ListTile(
-                        leading: const Icon(Icons.cake),
-                        title: const Text('วันเกิด'),
-                        subtitle: Text(user.birthDay != null 
-                            ? DateFormat('dd/MM/yyyy').format(user.birthDay!)  // แสดงวันที่ในรูปแบบ `dd/MM/yyyy`
-                            : 'ไม่ระบุ'),  // ถ้าเป็น null ให้แสดงข้อความ
-                      )
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          const Icon(Icons.cake),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('วันเกิด',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                Text(user.birthDay != null
+                                    ? DateFormat('dd/MM/yyyy')
+                                        .format(user.birthDay!)
+                                    : 'ไม่ระบุ'),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
               ),
-              
               const SizedBox(height: 32),
-              
-              // ส่วนอื่น ๆ ของแอปพลิเคชัน
-              const Text(
-                'ยินดีต้อนรับสู่แอปพลิเคชัน',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'คุณสามารถใช้งานฟีเจอร์ต่าง ๆ ของแอปพลิเคชันได้แล้ว',
-                style: TextStyle(fontSize: 16),
-              ),
             ],
           ),
         );

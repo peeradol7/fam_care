@@ -13,7 +13,6 @@ class SharedPrefercenseService {
     await prefs.setString("userId", user.userId!);
 
     print('User Saved **** $userKey');
-    print(userJson);
   }
 
   static Future<UsersModel?> getUser() async {

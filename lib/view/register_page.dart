@@ -1,6 +1,7 @@
 import 'package:fam_care/controller/email_login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../model/users_model.dart';
@@ -26,13 +27,14 @@ class _RegisterPageState extends State<RegisterPage> {
   void initState() {
     super.initState();
 
-    // Listener เมื่อผู้ใช้กรอกอายุ
     ageController.addListener(() {
       int? age = int.tryParse(ageController.text.trim());
       if (age != null && age > 0) {
         setState(() {
-          selectedDate.value = DateTime.now().subtract(Duration(days: age * 365));
-          birthDayController.text = DateFormat('dd/MM/yyyy').format(selectedDate.value!);
+          selectedDate.value =
+              DateTime.now().subtract(Duration(days: age * 365));
+          birthDayController.text =
+              DateFormat('dd/MM/yyyy').format(selectedDate.value!);
         });
       }
     });
@@ -40,7 +42,8 @@ class _RegisterPageState extends State<RegisterPage> {
     // Listener เมื่อผู้ใช้กรอกวันเกิด
     birthDayController.addListener(() {
       try {
-        DateTime birthDate = DateFormat('dd/MM/yyyy').parse(birthDayController.text.trim());
+        DateTime birthDate =
+            DateFormat('dd/MM/yyyy').parse(birthDayController.text.trim());
         setState(() {
           selectedDate.value = birthDate;
           int calculatedAge = DateTime.now().year - birthDate.year;
@@ -97,7 +100,15 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Register')),
+      appBar: AppBar(
+        title: Text('Register'),
+        leading: IconButton(
+            onPressed: () {
+              context.pop();
+            },
+            icon: Icon(Icons.arrow_back_ios)),
+        actions: [],
+      ),
       body: Padding(
         padding: EdgeInsets.all(20),
         child: Column(

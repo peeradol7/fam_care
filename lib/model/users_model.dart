@@ -28,9 +28,27 @@ class UsersModel {
       'password': password,
       'firstName': firstName,
       'lastName': lastName,
-      'birthDay': Timestamp.fromDate(birthDay!),
+      'birthDay': birthDay?.toIso8601String(),
+      'period': period?.toIso8601String(),
       'age': age,
     };
+  }
+
+  factory UsersModel.fromJson(Map<String, dynamic> json) {
+    return UsersModel(
+      userId: json['userId'] ?? '',
+      email: json['email'] ?? '',
+      firstName: json['firstName'] ?? '',
+      lastName: json['lastName'] ?? '',
+      age: json['age'] ?? 0,
+      password: json['password'] ?? '',
+      birthDay: json['birthDay'] is Timestamp
+          ? (json['birthDay'] as Timestamp).toDate()
+          : DateTime.parse(json['birthDay']),
+      period: json['period'] is Timestamp
+          ? (json['period'] as Timestamp).toDate()
+          : DateTime.parse(json['period']),
+    );
   }
 
   factory UsersModel.fromSnapshot(DocumentSnapshot snapshot) {
@@ -46,6 +64,4 @@ class UsersModel {
       period: data['period'],
     );
   }
-
-  static fromJson(jsonDecode) {}
 }
