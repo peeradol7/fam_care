@@ -48,4 +48,14 @@ class UserService {
       return null;
     }
   }
+
+  Future<bool> updateUser(String userId, Map<String, dynamic> data) async {
+    try {
+      await _firestore.collection(usersCollections).doc(userId).update(data);
+      return true;
+    } catch (e) {
+      print('Error updating user: $e');
+      return false;
+    }
+  }
 }

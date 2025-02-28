@@ -31,11 +31,6 @@ class AppRoutes {
         path: registerpage,
         builder: (context, state) => RegisterPage(),
       ),
-      // GoRoute(
-      //   path: loginEmailPasswordPage,
-      //   builder: (context, state) => LoginEmailPassword(),
-      // ),
-
       GoRoute(
         path: homePage,
         builder: (context, state) => HomeScreen(),
@@ -48,7 +43,7 @@ class AppRoutes {
         path: '$profilePage/:userId',
         builder: (context, state) {
           final userId = state.pathParameters['userId'] ?? '';
-          return ProfilePage(userId: userId);
+          return ProfileEditPage(userId: userId);
         },
       ),
     ],
