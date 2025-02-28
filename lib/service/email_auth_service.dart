@@ -108,45 +108,4 @@ class EmailAuthService {
       throw "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง";
     }
   }
-
-  Future<UsersModel?> getUserData(String uid) async {
-    try {
-      User? currentUser = _auth.currentUser;
-      if (currentUser == null) {
-        throw "ไม่พบข้อมูลผู้ใช้ที่เข้าสู่ระบบ";
-      }
-
-      DocumentSnapshot userDoc = await _firestore
-          .collection(userCollection)
-          .doc(currentUser.uid)
-          .get();
-
-      if (!userDoc.exists) {
-        throw "ไม่พบข้อมูลผู้ใช้ในฐานข้อมูล";
-      }
-
-      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-
-      DateTime? parseTimestamp(dynamic value) {
-        if (value is Timestamp) {
-          return value.toDate();
-        }
-        return null;
-      }
-
-      UsersModel user = UsersModel(
-        userId: userData["userId"] ?? "",
-        email: userData["email"] ?? "",
-        firstName: userData["firstName"] ?? "",
-        lastName: userData["lastName"] ?? "",
-        birthDay: parseTimestamp(userData["birthDay"]),
-        period: parseTimestamp(userData["period"]),
-      );
-
-      return user;
-    } catch (e) {
-      print("เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้: $e");
-      throw "เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้ กรุณาลองใหม่อีกครั้ง";
-    }
-  }
 }
