@@ -31,18 +31,34 @@ class UserService {
 
   Future<UsersModel?> fetchUserDataByUserId(String uid) async {
     try {
+      print("กำลังค้นหาข้อมูลจาก collection: $usersCollections, document ID: $uid");
+      
       final userDoc = await FirebaseFirestore.instance
           .collection(usersCollections)
           .doc(uid)
           .get();
 
       if (!userDoc.exists || userDoc.data() == null) {
+        print("ไม่พบเอกสารสำหรับ UID: $uid ใน collection: $usersCollections");
         return null;
       }
 
       final data = userDoc.data()!;
-
-      return UsersModel.fromJson(data);
+      print("ข้อมูลดิบจาก Firestore: $data");
+      
+      // ตรวจสอบข้อมูลสำคัญว่ามีอยู่หรือไม่
+      print("userId ใน data: ${data['userId']}");
+      print("firstName ใน data: ${data['firstName']}");
+      print("lastName ใน data: ${data['lastName']}");
+      
+      try {
+        final userModel = UsersModel.fromJson(data);
+        print("แปลงข้อมูลสำเร็จ: $userModel");
+        return userModel;
+      } catch (e) {
+        print("เกิดข้อผิดพลาดในการแปลง JSON เป็น UsersModel: $e");
+        return null;
+      }
     } catch (e) {
       print('Error fetching user data: $e');
       return null;

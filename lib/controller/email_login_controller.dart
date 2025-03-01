@@ -13,14 +13,13 @@ class EmailLoginController extends GetxController {
   var isLoading = false.obs;
   var userData = Rxn<UsersModel?>(null);
 
+
   Future<void> emailSignUpController(UsersModel userModel) async {
     isLoading.value = true;
     try {
       User? userCredential = await authService.signUpWithEmail(userModel);
       if (userCredential != null) {
-        Get.snackbar("สำเร็จ", "สมัครสมาชิกเรียบร้อย!");
-      } else {
-        Get.snackbar("ผิดพลาด", "สมัครสมาชิกไม่สำเร็จ");
+        Get.snackbar("สมัครสำเร็จ!", "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ");
       }
     } catch (e) {
       Get.snackbar("ผิดพลาด", e.toString());
@@ -29,6 +28,7 @@ class EmailLoginController extends GetxController {
     }
   }
 
+
   Future<void> signIn(
       String email, String password, BuildContext context) async {
     isLoading.value = true;
@@ -36,15 +36,30 @@ class EmailLoginController extends GetxController {
       User? userCredential = await authService.signIn(email, password);
 
       if (userCredential != null) {
-        userController.fetchUserDataById(userCredential.uid);
+        print("ล็อกอินสำเร็จด้วย UID: ${userCredential.uid}");
+        
+        // ดึงข้อมูลจาก Firestore ตาม UID
+        await userController.fetchUserDataById(userCredential.uid);
+
+        // ตรวจสอบว่าข้อมูลถูกดึงมาแล้วหรือไม่
+        if (userController.userData.value != null) {
+          print("ดึงข้อมูลผู้ใช้สำเร็จ: ${userController.userData.value!.firstName} ${userController.userData.value!.lastName}");
+        } else {
+          print("ดึงข้อมูลผู้ใช้ไม่สำเร็จ");
+        }
+
         if (context.mounted) {
           context.go(AppRoutes.homePage);
         }
+      } else {
+        print("ล็อกอินไม่สำเร็จ: ไม่ได้รับข้อมูล User");
       }
     } catch (e) {
-      print('Error $e');
+      print('Error during sign in: $e');
+      Get.snackbar("เกิดข้อผิดพลาด", e.toString());
     } finally {
       isLoading.value = false;
     }
   }
+
 }

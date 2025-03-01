@@ -52,7 +52,7 @@ class UsersModel {
               ? (json['period'] as Timestamp).toDate()
               : DateTime.tryParse(json['period'] ?? '') ??
                   DateTime(2000, 1, 1)),
-      authMethod: json['authMethod'],
+      authMethod: json['authMethod'] ?? '',
     );
   }
 

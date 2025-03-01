@@ -50,18 +50,40 @@ class UserController extends GetxController {
 
   Future<void> fetchUserDataById(String userId) async {
     isLoading.value = true;
+    print("เริ่มโหลดข้อมูลของ userId: $userId");
+
+    // ตรวจสอบว่า userId ถูกต้องหรือไม่
+    if (userId.isEmpty) {
+      print("userId ไม่ถูกต้อง");
+      isLoading.value = false;
+      return;
+    }
+
+    // เรียกใช้งานฟังก์ชัน fetchUserDataByUserId
     userData.value = await _userService.fetchUserDataByUserId(userId);
 
+    // แก้ไขการพิมพ์ค่า - ใช้ ${} เพื่อให้แสดงค่าที่ถูกต้อง
+    print("ค่าข้อมูลที่ได้รับ: ${userData.value}");
+
     if (userData.value != null) {
+      print("โหลดข้อมูลสำเร็จ - firstName: ${userData.value!.firstName}, lastName: ${userData.value!.lastName}");
+      
+      // ทดสอบพิมพ์ค่าวันที่เพื่อตรวจสอบ
+      print("birthDate: ${userData.value?.birthDay}");
+      print("periodDate: ${userData.value?.period}");
+
       // กำหนดค่าเริ่มต้นให้กับ controllers
       firstNameController.text = userData.value!.firstName ?? '';
       lastNameController.text = userData.value!.lastName ?? '';
       birthDate.value = userData.value?.birthDay;
       periodDate.value = userData.value?.period;
+    } else {
+      print("ไม่พบข้อมูลของ userId: $userId");
     }
 
     isLoading.value = false;
   }
+
 
   Future<bool> saveUserData(String userId, String authMethod) async {
     if (!formKey.currentState!.validate()) {
