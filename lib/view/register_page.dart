@@ -31,8 +31,19 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _register() {
+    // ตรวจสอบว่ามีช่องไหนที่ว่างหรือไม่
+    if (emailController.text.trim().isEmpty ||
+        firstNameController.text.trim().isEmpty ||
+        lastNameController.text.trim().isEmpty ||
+        passwordController.text.trim().isEmpty ||
+        birthDateController.text.trim().isEmpty ||
+        periodDateController.text.trim().isEmpty) {
+      _showErrorDialog("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+      return;
+    }
+
     if (_birthDate == null || _periodDate == null) {
-      Get.snackbar("ผิดพลาด", "กรุณาเลือกวันเกิดและวันเป็นประจำเดือน");
+      _showErrorDialog("กรุณาเลือกวันเกิดและวันเป็นประจำเดือน");
       return;
     }
 
@@ -46,7 +57,28 @@ class _RegisterPageState extends State<RegisterPage> {
       authMethod: 'email',
     );
 
-    authController.emailSignUpController(user,context);
+    authController.emailSignUpController(user, context);
+  }
+
+  // ฟังก์ชันแสดง `showDialog` สำหรับแจ้งเตือน
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("ผิดพลาด"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("ตกลง"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
