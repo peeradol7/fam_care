@@ -1,10 +1,9 @@
-import 'package:fam_care/app_routes.dart';
 import 'package:fam_care/constatnt/app_colors.dart';
 import 'package:fam_care/controller/user_controller.dart';
 import 'package:fam_care/view/home_page/widget/logout_dialog_widget.dart';
+import 'package:fam_care/view/home_page/widget/person_data_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,17 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _controller.loadUserFromPrefs();
-  }
-
-  int calculateAge(DateTime birthDate) {
-    final today = DateTime.now();
-    int age = today.year - birthDate.year;
-
-    if (today.month < birthDate.month ||
-        (today.month == birthDate.month && today.day < birthDate.day)) {
-      age--;
-    }
-    return age;
   }
 
   @override
@@ -53,29 +41,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Obx(() {
-        if (_controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (_controller.userData.value == null) {
-          return const Center(
-            child: Text(
-              'ไม่พบข้อมูลผู้ใช้ กรุณาเข้าสู่ระบบอีกครั้ง',
-              style: TextStyle(fontSize: 16),
-            ),
-          );
-        }
-
-        final user = _controller.userData.value!;
-        return Padding(
+      body: SingleChildScrollView(
+        child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'ข้อมูลผู้ใช้',
+                  'ข้อมูลส่วนตัว',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -89,83 +63,60 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: AppColors.colorButton),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
+                    child: PersonDataWidget(),
+                  ),
+                ),
+                SizedBox(height: 30),
+                SingleChildScrollView(
+                  child: Center(
                     child: Column(
                       children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.email),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text('อีเมล',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  Text(user.email!),
-                                ],
+                        GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: Colors.pinkAccent[100]),
+                            width: 300,
+                            height: 100,
+                            child: Center(
+                              child: Text(
+                                'เลือกวิธีคุมกำเนิด',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            const Icon(Icons.person),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'ชื่อ-นามสกุล',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  Text('${user.firstName} ${user.lastName}'),
-                                ],
+                        SizedBox(height: 20),
+                        GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: Colors.redAccent[100]),
+                            width: 300,
+                            height: 100,
+                            child: Center(
+                              child: Text(
+                                'บันทึกรอบประจำเดือน',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            const Icon(Icons.cake),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'วันเกิด',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(user.birthDay != null
-                                      ? '${calculateAge(user.birthDay!)} ปี'
-                                      : 'ไม่ระบุ'),
-                                ],
-                              ),
-                            ),
-                            IconButton(
-                                onPressed: () {
-                                  final route = AppRoutes.profilePage;
-                                  final userId = user.userId;
-                                  context.push('$route/$userId');
-                                },
-                                icon: Icon(Icons.edit))
-                          ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ),
+                )
               ],
             ),
           ),
-        );
-      }),
+        ),
+      ),
     );
   }
 }
