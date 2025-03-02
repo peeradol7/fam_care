@@ -31,8 +31,9 @@ class UserService {
 
   Future<UsersModel?> fetchUserDataByUserId(String uid) async {
     try {
-      print("กำลังค้นหาข้อมูลจาก collection: $usersCollections, document ID: $uid");
-      
+      print(
+          "กำลังค้นหาข้อมูลจาก collection: $usersCollections, document ID: $uid");
+
       final userDoc = await FirebaseFirestore.instance
           .collection(usersCollections)
           .doc(uid)
@@ -45,12 +46,7 @@ class UserService {
 
       final data = userDoc.data()!;
       print("ข้อมูลดิบจาก Firestore: $data");
-      
-      // ตรวจสอบข้อมูลสำคัญว่ามีอยู่หรือไม่
-      print("userId ใน data: ${data['userId']}");
-      print("firstName ใน data: ${data['firstName']}");
-      print("lastName ใน data: ${data['lastName']}");
-      
+
       try {
         final userModel = UsersModel.fromJson(data);
         print("แปลงข้อมูลสำเร็จ: $userModel");

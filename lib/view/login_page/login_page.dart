@@ -38,10 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (userController.userData.value == null) {
       CircularProgressIndicator();
       await googleAuthController.googleLoginController();
-      print('Data Value : ${userController.userData.value?.userId}');
     }
     if (userController.userData.value != null) {
-      print('Data Value : ${userController.userData.value!.userId}');
       context.go(AppRoutes.homePage);
     }
   }

@@ -72,79 +72,81 @@ class _RegisterPageState extends State<RegisterPage> {
           icon: Icon(Icons.arrow_back_ios),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: [
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(labelText: 'อีเมล'),
-            ),
-            TextField(
-              controller: firstNameController,
-              decoration: InputDecoration(labelText: 'ชื่อจริง'),
-            ),
-            TextField(
-              controller: lastNameController,
-              decoration: InputDecoration(labelText: 'นามสกุล'),
-            ),
-            TextFormField(
-              controller: birthDateController,
-              decoration: InputDecoration(labelText: 'Birth Date'),
-              readOnly: true,
-              onTap: () async {
-                DateTime? pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime.now(),
-                );
-
-                if (pickedDate != null) {
-                  setState(
-                    () {
-                      _birthDate = pickedDate;
-                      birthDateController.text =
-                          "${_birthDate!.toLocal()}".split(' ')[0];
-                    },
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            children: [
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(labelText: 'อีเมล'),
+              ),
+              TextField(
+                controller: firstNameController,
+                decoration: InputDecoration(labelText: 'ชื่อจริง'),
+              ),
+              TextField(
+                controller: lastNameController,
+                decoration: InputDecoration(labelText: 'นามสกุล'),
+              ),
+              TextFormField(
+                controller: birthDateController,
+                decoration: InputDecoration(labelText: 'Birth Date'),
+                readOnly: true,
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime.now(),
                   );
-                }
-              },
-            ),
-            TextFormField(
-              controller: periodDateController,
-              decoration: InputDecoration(labelText: 'Period Date'),
-              readOnly: true,
-              onTap: () async {
-                DateTime? pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime.now(),
-                );
 
-                if (pickedDate != null) {
-                  setState(() {
-                    _periodDate = pickedDate;
-                    periodDateController.text =
-                        "${_periodDate!.toLocal()}".split(' ')[0];
-                  });
-                }
-              },
-            ),
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            Obx(() => authController.isLoading.value
-                ? CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: _register,
-                    child: Text('Register'),
-                  )),
-          ],
+                  if (pickedDate != null) {
+                    setState(
+                      () {
+                        _birthDate = pickedDate;
+                        birthDateController.text =
+                            "${_birthDate!.toLocal()}".split(' ')[0];
+                      },
+                    );
+                  }
+                },
+              ),
+              TextFormField(
+                controller: periodDateController,
+                decoration: InputDecoration(labelText: 'Period Date'),
+                readOnly: true,
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime.now(),
+                  );
+
+                  if (pickedDate != null) {
+                    setState(() {
+                      _periodDate = pickedDate;
+                      periodDateController.text =
+                          "${_periodDate!.toLocal()}".split(' ')[0];
+                    });
+                  }
+                },
+              ),
+              TextField(
+                controller: passwordController,
+                decoration: InputDecoration(labelText: 'Password'),
+                obscureText: true,
+              ),
+              SizedBox(height: 20),
+              Obx(() => authController.isLoading.value
+                  ? CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: _register,
+                      child: Text('Register'),
+                    )),
+            ],
+          ),
         ),
       ),
     );
