@@ -46,7 +46,7 @@ class _RegisterPageState extends State<RegisterPage> {
       authMethod: 'email',
     );
 
-    authController.emailSignUpController(user);
+    authController.emailSignUpController(user,context);
   }
 
   @override

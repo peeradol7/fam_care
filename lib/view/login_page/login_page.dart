@@ -131,33 +131,53 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    Obx(
-                      () => ElevatedButton(
-                        onPressed: _emailController.isLoading.value
-                            ? null
-                            : () {
-                                if (_formKey.currentState!.validate()) {
-                                  _emailController.signIn(
+                  Obx(
+                    () => ElevatedButton(
+                      onPressed: _emailController.isLoading.value
+                          ? null
+                          : () async {
+                              if (_formKey.currentState!.validate()) {
+                                try {
+                                  await _emailController.signIn(
                                     _emailTextController.text,
                                     _passwordController.text,
                                     context,
                                   );
+                                } catch (e) {
+                                  // จัดการ error ที่หน้า view
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text("แจ้งเตือน"),
+                                        content: Text("เกิดข้อผิดพลาดในการเข้าสู่ระบบ: ${e.toString()}"),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text("ตกลง"),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 }
-                              },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50),
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white,
-                        ),
-                        child: _emailController.isLoading.value
-                            ? const CircularProgressIndicator(
-                                color: Colors.white)
-                            : const Text(
-                                'เข้าสู่ระบบด้วยอีเมล',
-                                style: TextStyle(fontSize: 16),
-                              ),
+                              }
+                            },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50),
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
                       ),
+                      child: _emailController.isLoading.value
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              'เข้าสู่ระบบด้วยอีเมล',
+                              style: TextStyle(fontSize: 16),
+                            ),
                     ),
+                  )
                   ],
                 ),
               ),
