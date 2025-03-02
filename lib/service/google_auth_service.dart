@@ -24,7 +24,6 @@ class GoogleAuthService {
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
-
       final String? idToken = googleAuth.idToken;
       final String? accessToken = googleAuth.accessToken;
 
@@ -38,25 +37,45 @@ class GoogleAuthService {
 
       if (user != null) {
         try {
-          UsersModel userModel = UsersModel(
-            userId: user.uid,
-            email: user.email ?? '',
-            firstName: '',
-            lastName: '',
-            password: '',
-            birthDay: null,
-            period: null,
-            authMethod: 'google',
-          );
-          _firestore
-              .collection(userCollection)
-              .doc(user.uid)
-              .set(userModel.toJson());
+          // Check if user already exists in Firestore
+          final docSnapshot =
+              await _firestore.collection(userCollection).doc(user.uid).get();
 
-          SharedPrefercenseService.saveUser(userModel);
+          if (docSnapshot.exists) {
+            // User exists, retrieve data from Firestore
+            final userData = docSnapshot.data() as Map<String, dynamic>;
+            final existingUserModel = UsersModel.fromJson(userData);
 
-          return user;
+            // Save existing user data to SharedPreferences
+            SharedPrefercenseService.saveUser(existingUserModel);
+
+            print('Existing user, data loaded from Firestore');
+            return user;
+          } else {
+            // New user, create and save new model
+            UsersModel userModel = UsersModel(
+              userId: user.uid,
+              email: user.email ?? '',
+              firstName: '',
+              lastName: '',
+              password: '',
+              birthDay: null,
+              period: null,
+              authMethod: 'google',
+            );
+
+            await _firestore
+                .collection(userCollection)
+                .doc(user.uid)
+                .set(userModel.toJson());
+
+            SharedPrefercenseService.saveUser(userModel);
+
+            print('New user, data created and saved');
+            return user;
+          }
         } catch (firestoreError) {
+          print('Firestore error: $firestoreError');
           return user;
         }
       } else {

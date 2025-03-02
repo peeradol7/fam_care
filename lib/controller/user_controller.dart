@@ -49,41 +49,23 @@ class UserController extends GetxController {
   }
 
   Future<void> fetchUserDataById(String userId) async {
-    isLoading.value = true;
-    print("เริ่มโหลดข้อมูลของ userId: $userId");
-
-    // ตรวจสอบว่า userId ถูกต้องหรือไม่
     if (userId.isEmpty) {
       print("userId ไม่ถูกต้อง");
       isLoading.value = false;
       return;
     }
 
-    // เรียกใช้งานฟังก์ชัน fetchUserDataByUserId
     userData.value = await _userService.fetchUserDataByUserId(userId);
 
-    // แก้ไขการพิมพ์ค่า - ใช้ ${} เพื่อให้แสดงค่าที่ถูกต้อง
-    print("ค่าข้อมูลที่ได้รับ: ${userData.value}");
-
     if (userData.value != null) {
-      print("โหลดข้อมูลสำเร็จ - firstName: ${userData.value!.firstName}, lastName: ${userData.value!.lastName}");
-      
-      // ทดสอบพิมพ์ค่าวันที่เพื่อตรวจสอบ
-      print("birthDate: ${userData.value?.birthDay}");
-      print("periodDate: ${userData.value?.period}");
-
-      // กำหนดค่าเริ่มต้นให้กับ controllers
       firstNameController.text = userData.value!.firstName ?? '';
       lastNameController.text = userData.value!.lastName ?? '';
       birthDate.value = userData.value?.birthDay;
       periodDate.value = userData.value?.period;
-    } else {
-      print("ไม่พบข้อมูลของ userId: $userId");
-    }
+    } else {}
 
     isLoading.value = false;
   }
-
 
   Future<bool> saveUserData(String userId, String authMethod) async {
     if (!formKey.currentState!.validate()) {
@@ -92,7 +74,6 @@ class UserController extends GetxController {
 
     isSaving.value = true;
     try {
-      // สร้าง Map เพื่อส่งเฉพาะข้อมูลที่ต้องการอัพเดต
       final Map<String, dynamic> updateData = {
         'firstName': firstNameController.text,
         'lastName': lastNameController.text,
@@ -122,28 +103,20 @@ class UserController extends GetxController {
       return false;
     } finally {
       isSaving.value = false;
+      update();
     }
   }
 
   void updateBirthDate(DateTime date) {
     birthDate.value = date;
-
-    // อัปเดตค่าใน TextEditingController สำหรับแสดงผลในฟอร์ม
     birthDateController.text = "${date.toLocal()}".split(' ')[0];
-
-    // สามารถเพิ่มการทำงานเพิ่มเติมได้ตามต้องการ เช่น คำนวณอายุอัตโนมัติ
-    // calculateAge(date);
+    update(); // เพิ่มบรรทัดนี้
   }
 
-// ฟังก์ชันอัปเดตวันมีประจำเดือน
   void updatePeriodDate(DateTime date) {
     periodDate.value = date;
-
-    // อัปเดตค่าใน TextEditingController สำหรับแสดงผลในฟอร์ม
     periodDateController.text = "${date.toLocal()}".split(' ')[0];
-
-    // สามารถเพิ่มการทำงานเพิ่มเติมได้ตามต้องการ เช่น คำนวณวันที่ควรเตือน
-    // calculateNextPeriodReminder(date);
+    update();
   }
 
   Future<void> signOut(BuildContext context) async {
@@ -172,7 +145,6 @@ class UserController extends GetxController {
 
   @override
   void onClose() {
-    // ต้องทำลาย controller เมื่อเลิกใช้งาน
     firstNameController.dispose();
     lastNameController.dispose();
     birthDateController.dispose();
