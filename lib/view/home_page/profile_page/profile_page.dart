@@ -1,6 +1,9 @@
 import 'package:fam_care/controller/user_controller.dart';
+import 'package:fam_care/view/home_page/profile_page/widget/textfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../constatnt/app_colors.dart';
 
 class ProfileEditPage extends StatefulWidget {
   final String userId;
@@ -16,7 +19,7 @@ class ProfileEditPage extends StatefulWidget {
 
 class _ProfileEditPageState extends State<ProfileEditPage> {
   final UserController userController = Get.find<UserController>();
-
+  final TextfieldWidget textfieldWidget = TextfieldWidget();
   @override
   void initState() {
     super.initState();
@@ -28,8 +31,10 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('แก้ไขข้อมูลผู้ใช้'),
+        title: const Text('แก้ไขข้อมูลส่วนตัว'),
+        backgroundColor: AppColors.secondary,
       ),
       body: GetBuilder<UserController>(
         builder: (controller) {
@@ -48,100 +53,39 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextFormField(
-                    controller: controller.firstNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'ชื่อ',
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'โปรดกรอกชื่อ';
-                      }
-                      return null;
-                    },
-                  ),
-
+                  textfieldWidget.buildTextField(
+                      controller.firstNameController, 'ชื่อ', 'โปรดกรอกชื่อ'),
                   const SizedBox(height: 16),
-
-                  // LastName
-                  TextFormField(
-                    controller: controller.lastNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'นามสกุล',
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'โปรดกรอกนามสกุล';
-                      }
-                      return null;
-                    },
-                  ),
-
+                  textfieldWidget.buildTextField(controller.lastNameController,
+                      'นามสกุล', 'โปรดกรอกนามสกุล'),
                   const SizedBox(height: 16),
-
-                  // Birthday - ไม่ใช้ Obx ที่นี่
-                  TextFormField(
-                    controller: controller.birthDateController,
-                    decoration: const InputDecoration(
-                      labelText: 'วันเกิด',
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                    ),
-                    readOnly: true,
-                    onTap: () async {
-                      DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate:
-                            controller.birthDate.value ?? DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime.now(),
-                      );
-
-                      if (pickedDate != null) {
-                        controller.updateBirthDate(pickedDate);
-                      }
-                    },
+                  textfieldWidget.buildDateField(
+                    context,
+                    'วันเกิด',
+                    controller.birthDateController,
+                    controller.birthDate.value,
+                    (pickedDate) => controller.updateBirthDate(pickedDate),
                   ),
-
                   const SizedBox(height: 16),
-
-                  TextFormField(
-                    controller: controller.periodDateController,
-                    decoration: const InputDecoration(
-                      labelText: 'วันที่มีประจำเดือน',
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                    ),
-                    readOnly: true,
-                    onTap: () async {
-                      DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate:
-                            controller.periodDate.value ?? DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime.now(),
-                      );
-
-                      if (pickedDate != null) {
-                        controller.updatePeriodDate(pickedDate);
-                      }
-                    },
+                  textfieldWidget.buildDateField(
+                    context,
+                    'วันที่มีประจำเดือน',
+                    controller.periodDateController,
+                    controller.periodDate.value,
+                    (pickedDate) => controller.updatePeriodDate(pickedDate),
                   ),
-
                   const SizedBox(height: 32),
-
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                       onPressed: controller.isSaving.value
                           ? null
                           : () async {
@@ -161,7 +105,8 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                             },
                       child: controller.isSaving.value
                           ? const CircularProgressIndicator()
-                          : const Text('บันทึกข้อมูล'),
+                          : const Text('บันทึกข้อมูล',
+                              style: TextStyle(fontSize: 16)),
                     ),
                   ),
                 ],

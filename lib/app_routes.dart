@@ -17,7 +17,7 @@ class AppRoutes {
   static const String profilePage = '/edit-profile';
 
   static final GoRouter router = GoRouter(
-    initialLocation: homePage,
+    initialLocation: landingPage,
     routes: [
       GoRoute(
         path: landingPage,

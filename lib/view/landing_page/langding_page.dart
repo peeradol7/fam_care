@@ -11,7 +11,7 @@ class LandingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<bool> _checkUserData() async {
+    Future<bool> checkUserData() async {
       final userData = await SharedPrefercenseService.getUser();
       if (userData != null) {
         Future.microtask(() => context.go(AppRoutes.homePage));
@@ -22,7 +22,7 @@ class LandingPage extends StatelessWidget {
 
     return Scaffold(
       body: FutureBuilder<bool>(
-        future: _checkUserData(),
+        future: checkUserData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
