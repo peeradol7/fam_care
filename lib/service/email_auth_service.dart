@@ -56,9 +56,9 @@ Future<User?> signUpWithEmail(UsersModel user) async {
 
       User? firebaseUser = userCredential.user;
 
-      // if (firebaseUser != null && !firebaseUser.emailVerified) {
-      //   throw "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ";
-      // }
+      if (firebaseUser != null && !firebaseUser.emailVerified) {
+        throw "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ";
+      }
 
       print("เข้าสู่ระบบสำเร็จ!");
       return firebaseUser;
