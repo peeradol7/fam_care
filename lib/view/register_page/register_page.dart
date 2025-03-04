@@ -152,7 +152,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   RegisterButton(
                     isLoading: authController.isLoading.value,
                     onPressed: _register,
-                    color: AppColors.colorButton, // กำหนดสีปุ่ม
+                    color: AppColors.colorButton,
                   ),
                   SizedBox(height: 15),
                   _buildLoginRedirect(),

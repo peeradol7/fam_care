@@ -54,16 +54,16 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // ส่วนหัวของหน้าจอ
               const SizedBox(height: 20),
-              const Icon(
-                Icons.lock_outlined,
-                size: 80,
-                color: Colors.blue,
+              Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(color: Colors.amber),
+                child: Center(
+                  child: Text('ใส่โลโก้แอป'),
+                ),
               ),
               const SizedBox(height: 16),
-
-              const SizedBox(height: 8),
               const Text(
                 'กรุณาเข้าสู่ระบบเพื่อใช้งานแอปพลิเคชัน',
                 textAlign: TextAlign.center,
@@ -73,12 +73,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-
               Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    // ฟิลด์กรอกอีเมล
                     TextFormField(
                       controller: _emailTextController,
                       decoration: const InputDecoration(
@@ -98,8 +96,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-
-                    // ฟิลด์กรอกรหัสผ่าน
                     TextFormField(
                       controller: _passwordController,
                       decoration: const InputDecoration(
@@ -119,7 +115,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     const SizedBox(height: 8),
-
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
@@ -128,7 +123,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-
                     Obx(
                       () => ElevatedButton(
                         onPressed: _emailController.isLoading.value
@@ -187,7 +181,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     googleHandleLogin();
                   },
                   label: 'เข้าสู่ระบบด้วย Google '),
-
               const Row(
                 children: [
                   Expanded(child: Divider()),
@@ -202,7 +195,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               const SizedBox(height: 24),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

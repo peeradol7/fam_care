@@ -36,6 +36,14 @@ class LandingPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Container(
+                  width: 300,
+                  height: 300,
+                  decoration: BoxDecoration(color: Colors.amber),
+                  child: Center(
+                    child: Text('ใส่โลโก้แอป'),
+                  ),
+                ),
                 const Text(
                   'Welcome to FamCare',
                   style: TextStyle(
