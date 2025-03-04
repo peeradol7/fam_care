@@ -13,49 +13,42 @@ class EmailLoginController extends GetxController {
   var isLoading = false.obs;
   var userData = Rxn<UsersModel?>(null);
 
-
-  Future<void> emailSignUpController(UsersModel userModel, BuildContext context) async {
+  Future<void> emailSignUpController(
+      UsersModel userModel, BuildContext context) async {
     isLoading.value = true;
     try {
       User? userCredential = await authService.signUpWithEmail(userModel);
       if (userCredential != null) {
         Get.snackbar("สมัครสำเร็จ!", "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ");
       } else {
-        // แสดง error dialog กรณีไม่ได้รับข้อมูลผู้ใช้
-        _showErrorDialog(context, "การสมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
+        _showErrorDialog(
+            context, "การสมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
       }
     } catch (e) {
-      Get.snackbar("ผิดพลาด", e.toString()); // คงการใช้ snackbar ไว้
-      
-      // เพิ่มการแสดง error dialog
-      _showErrorDialog(context, _getReadableSignUpErrorMessage_SignUp(e.toString()));
+      Get.snackbar("ผิดพลาด", e.toString());
+
+      _showErrorDialog(
+          context, _getReadableSignUpErrorMessage_SignUp(e.toString()));
     } finally {
       isLoading.value = false;
     }
   }
 
-
-  Future<void> signIn(String email, String password, BuildContext context) async {
+  Future<void> signIn(
+      String email, String password, BuildContext context) async {
     isLoading.value = true;
     try {
       User? userCredential = await authService.signIn(email, password);
 
       if (userCredential != null) {
-        print("ล็อกอินสำเร็จด้วย UID: ${userCredential.uid}");
-        
-        // ดึงข้อมูลจาก Firestore ตาม UID
-        await userController.fetchUserDataById(userCredential.uid);
+        userController.fetchUserDataById(userCredential.uid);
 
-        // ตรวจสอบว่าข้อมูลถูกดึงมาแล้วหรือไม่
         if (userController.userData.value != null) {
-          print("ดึงข้อมูลผู้ใช้สำเร็จ: ${userController.userData.value!.firstName} ${userController.userData.value!.lastName}");
         } else {
-          print("ดึงข้อมูลผู้ใช้ไม่สำเร็จ");
-          
-          // แสดง popup เมื่อไม่สามารถดึงข้อมูลได้
           if (context.mounted) {
-            _showErrorDialog(context, "ไม่สามารถดึงข้อมูลผู้ใช้งานได้ กรุณาลองใหม่อีกครั้ง");
-            return; // ไม่ไปหน้า homePage เมื่อดึงข้อมูลไม่สำเร็จ
+            _showErrorDialog(
+                context, "ไม่สามารถดึงข้อมูลผู้ใช้งานได้ กรุณาลองใหม่อีกครั้ง");
+            return;
           }
         }
 
@@ -63,17 +56,12 @@ class EmailLoginController extends GetxController {
           context.go(AppRoutes.homePage);
         }
       } else {
-        print("ล็อกอินไม่สำเร็จ: ไม่ได้รับข้อมูล User");
-        
-        // แสดง popup เมื่อ login ไม่สำเร็จ
         if (context.mounted) {
-          _showErrorDialog(context, "ล็อกอินไม่สำเร็จ กรุณาตรวจสอบอีเมลและรหัสผ่าน");
+          _showErrorDialog(
+              context, "ล็อกอินไม่สำเร็จ กรุณาตรวจสอบอีเมลและรหัสผ่าน");
         }
       }
     } catch (e) {
-      print('Error during sign in: $e');
-      
-      // แสดง popup เมื่อเกิด error
       if (context.mounted) {
         String errorMessage = _getReadableErrorMessage_Login(e.toString());
         _showErrorDialog(context, errorMessage);
@@ -83,9 +71,6 @@ class EmailLoginController extends GetxController {
     }
   }
 
-
-
-  // ฟังก์ชันสำหรับแสดง error dialog
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
@@ -141,5 +126,4 @@ class EmailLoginController extends GetxController {
       return "เกิดข้อผิดพลาดในการสมัครสมาชิก: $errorMessage";
     }
   }
-
 }

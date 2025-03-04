@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// ฟังก์ชันแสดงข้อความเมื่อสมัครสำเร็จ
 void showSuccessDialog(BuildContext context, VoidCallback onConfirm) {
   showDialog(
     context: context,

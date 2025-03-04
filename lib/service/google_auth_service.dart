@@ -37,22 +37,18 @@ class GoogleAuthService {
 
       if (user != null) {
         try {
-          // Check if user already exists in Firestore
           final docSnapshot =
               await _firestore.collection(userCollection).doc(user.uid).get();
 
           if (docSnapshot.exists) {
-            // User exists, retrieve data from Firestore
             final userData = docSnapshot.data() as Map<String, dynamic>;
             final existingUserModel = UsersModel.fromJson(userData);
 
-            // Save existing user data to SharedPreferences
             SharedPrefercenseService.saveUser(existingUserModel);
 
             print('Existing user, data loaded from Firestore');
             return user;
           } else {
-            // New user, create and save new model
             UsersModel userModel = UsersModel(
               userId: user.uid,
               email: user.email ?? '',

@@ -50,12 +50,12 @@ class UserController extends GetxController {
 
   Future<void> fetchUserDataById(String userId) async {
     if (userId.isEmpty) {
-      print("userId ไม่ถูกต้อง");
       isLoading.value = false;
       return;
     }
 
     userData.value = await _userService.fetchUserDataByUserId(userId);
+    SharedPrefercenseService.saveUser(userData.value!);
 
     if (userData.value != null) {
       firstNameController.text = userData.value!.firstName ?? '';

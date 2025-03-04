@@ -1,17 +1,17 @@
 import 'package:fam_care/app_routes.dart';
+import 'package:fam_care/controller/email_login_controller.dart';
+import 'package:fam_care/model/users_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:fam_care/controller/email_login_controller.dart';
-import 'package:fam_care/model/users_model.dart';
+
+import '../../constatnt/app_colors.dart';
 import '../register_page/widget/date_field.dart';
+import '../register_page/widget/dialogs.dart';
 import '../register_page/widget/email_field.dart';
 import '../register_page/widget/name_field.dart';
 import '../register_page/widget/password_field.dart';
 import '../register_page/widget/register_button.dart';
-import '../register_page/widget/dialogs.dart';
-import '../../constatnt/app_colors.dart';
-
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -58,9 +58,8 @@ class _RegisterPageState extends State<RegisterPage> {
       );
 
       authController.emailSignUpController(user, context).then((_) {
-        // แสดงข้อความเมื่อสมัครสำเร็จ
         showSuccessDialog(context, () {
-          context.go(AppRoutes.loginPage); // นำผู้ใช้กลับไปยังหน้าล็อกอิน
+          context.go(AppRoutes.loginPage);
         });
       }).catchError((error) {
         showErrorDialog(context, error.toString());
@@ -83,8 +82,14 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('สมัครสมาชิก', style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: AppColors.primary, // เปลี่ยนสีแอปบาร์
+        title: Text(
+          'สมัครสมาชิก',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: AppColors.primary,
         leading: IconButton(
           onPressed: () {
             context.pop();
@@ -95,10 +100,9 @@ class _RegisterPageState extends State<RegisterPage> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [AppColors.background, AppColors.secondary]          
-          ),
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [AppColors.background, AppColors.secondary]),
         ),
         child: SingleChildScrollView(
           child: Padding(
@@ -112,9 +116,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: Text(
                       "สร้างบัญชีใหม่",
                       style: TextStyle(
-                        fontSize: 24, 
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.primary, // ใช้สีหลักของแอป
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -160,7 +164,7 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
-  
+
   Widget _buildLoginRedirect() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

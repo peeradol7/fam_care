@@ -8,47 +8,41 @@ class EmailAuthService {
 
   static final String userCollection = 'users';
 
-/// ฟังก์ชันสมัครสมาชิก
-Future<User?> signUpWithEmail(UsersModel user) async {
-  try {
-    // สมัครสมาชิกกับ Firebase Auth
-    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-      email: user.email!, password: user.password!,
-    );
+  Future<User?> signUpWithEmail(UsersModel user) async {
+    try {
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: user.email!,
+        password: user.password!,
+      );
 
-    User? firebaseUser = userCredential.user;
+      User? firebaseUser = userCredential.user;
 
-    // ส่งอีเมลยืนยัน
-    await firebaseUser?.sendEmailVerification();
-    print("กรุณายืนยันอีเมลของคุณก่อนใช้งาน");
+      await firebaseUser?.sendEmailVerification();
 
-    // บันทึกข้อมูลผู้ใช้ลง Firestore
-    if (firebaseUser != null) {
-      bool success = await saveUserData(user);
-      if (success) {
-        print("ข้อมูลผู้ใช้ถูกบันทึกลง Firestore เรียบร้อยแล้ว");
+      if (firebaseUser != null) {
+        bool success = await saveUserData(user);
+        if (success) {
+          print("ข้อมูลผู้ใช้ถูกบันทึกลง Firestore เรียบร้อยแล้ว");
+        }
       }
+
+      return firebaseUser;
+    } on FirebaseAuthException catch (e) {
+      _handleAuthError(e);
+    } catch (e) {
+      print("เกิดข้อผิดพลาด: $e");
+      throw "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง";
     }
-
-    return firebaseUser;
-  } on FirebaseAuthException catch (e) {
-    _handleAuthError(e);
-  } catch (e) {
-    print("เกิดข้อผิดพลาด: $e");
-    throw "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง";
+    return null;
   }
-  return null;
-}
 
-
-  /// ฟังก์ชันตรวจสอบว่าอีเมลได้รับการยืนยันหรือยัง
   Future<bool> isEmailVerified() async {
     User? user = _auth.currentUser;
-    await user?.reload(); // โหลดข้อมูลใหม่เพื่อให้ Firebase อัปเดตสถานะ
+    await user?.reload();
     return user?.emailVerified ?? false;
   }
 
-  /// ฟังก์ชันเข้าสู่ระบบ (เช็คว่าอีเมลได้รับการยืนยันแล้ว)
   Future<User?> signIn(String email, String password) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -71,7 +65,6 @@ Future<User?> signUpWithEmail(UsersModel user) async {
     return null;
   }
 
-  /// ฟังก์ชันบันทึกข้อมูลลง Firestore เมื่อผู้ใช้ยืนยันอีเมลแล้ว
   Future<bool> saveUserData(UsersModel user) async {
     User? firebaseUser = _auth.currentUser;
     if (firebaseUser == null) return false;
@@ -97,7 +90,6 @@ Future<User?> signUpWithEmail(UsersModel user) async {
     return true;
   }
 
-  /// จัดการข้อผิดพลาดของ Firebase Authentication
   void _handleAuthError(FirebaseAuthException e) {
     String errorMessage;
     switch (e.code) {
@@ -123,7 +115,6 @@ Future<User?> signUpWithEmail(UsersModel user) async {
     throw errorMessage;
   }
 
-  /// คำนวณอายุจากวันเกิด
   int _calculateAge(DateTime birthDate) {
     DateTime today = DateTime.now();
     int age = today.year - birthDate.year;
