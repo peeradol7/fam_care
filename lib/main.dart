@@ -1,5 +1,5 @@
 import 'package:fam_care/constatnt/app_colors.dart';
-import 'package:fam_care/controller/email_login_controller.dart';
+import 'package:fam_care/controller/email_auth_controller.dart';
 import 'package:fam_care/controller/google_auth_controller.dart';
 import 'package:fam_care/controller/menu_bar_controller.dart';
 import 'package:fam_care/controller/user_controller.dart';
@@ -19,7 +19,7 @@ void main() async {
   Get.put(MenuBarController());
   Get.put(GoogleAuthController());
   Get.put(UserController());
-  Get.put(EmailLoginController());
+  Get.put(EmailAuthController());
 
   runApp(const MyApp());
 }

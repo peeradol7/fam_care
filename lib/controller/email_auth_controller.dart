@@ -7,9 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
-class EmailLoginController extends GetxController {
+class EmailAuthController extends GetxController {
   final EmailAuthService authService = EmailAuthService();
   final UserController userController = Get.put(UserController());
+  final emailController = TextEditingController();
   var isLoading = false.obs;
   var userData = Rxn<UsersModel?>(null);
 
@@ -91,7 +92,6 @@ class EmailLoginController extends GetxController {
     );
   }
 
-  // ฟังก์ชันสำหรับแปล error message ให้อ่านง่ายขึ้น
   String _getReadableErrorMessage_Login(String errorMessage) {
     if (errorMessage.contains("wrong-password")) {
       return "รหัสผ่านไม่ถูกต้อง";
@@ -107,6 +107,49 @@ class EmailLoginController extends GetxController {
       return "เกิดปัญหาการเชื่อมต่อเครือข่าย";
     } else {
       return "เกิดข้อผิดพลาด: $errorMessage";
+    }
+  }
+
+  Future<void> resetPassword(BuildContext context) async {
+    String email = emailController.text.trim();
+
+    if (email.isEmpty) {
+      Get.snackbar("ข้อผิดพลาด", "กรุณากรอกอีเมล",
+          snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
+
+    String? errorMessage = await authService.resetPassword(email);
+
+    if (errorMessage == null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("สำเร็จ!"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.email_outlined, size: 50, color: Colors.blue),
+                SizedBox(height: 10),
+                Text("กรุณาตรวจสอบอีเมลของคุณ\nเพื่อทำการรีเซ็ตรหัสผ่าน"),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  emailController.clear();
+                  context.push(AppRoutes.landingPage);
+                },
+                child: Text("ตกลง"),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      Get.snackbar("เกิดข้อผิดพลาด", errorMessage,
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 

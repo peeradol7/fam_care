@@ -1,5 +1,5 @@
 import 'package:fam_care/app_routes.dart';
-import 'package:fam_care/controller/email_login_controller.dart';
+import 'package:fam_care/controller/email_auth_controller.dart';
 import 'package:fam_care/model/users_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,7 +19,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final EmailLoginController authController = Get.put(EmailLoginController());
+  final EmailAuthController authController = Get.put(EmailAuthController());
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();

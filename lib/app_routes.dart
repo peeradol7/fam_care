@@ -3,6 +3,7 @@ import 'package:fam_care/view/home_page/profile_page/profile_page.dart';
 import 'package:fam_care/view/landing_page/langding_page.dart';
 import 'package:fam_care/view/login_page/login_page.dart';
 import 'package:fam_care/view/register_page/register_page.dart';
+import 'package:fam_care/view/register_page/reset_password_page.dart';
 import 'package:fam_care/view/test.dart';
 import 'package:go_router/go_router.dart';
 
@@ -14,6 +15,8 @@ class AppRoutes {
   static const String inputInformationPage = '/input-information';
   static const String homePage = '/homePage';
   static const String test = '/test';
+  static const String resetPasswordPage = '/reset-password';
+
   static const String profilePage = '/edit-profile';
 
   static final GoRouter router = GoRouter(
@@ -38,6 +41,10 @@ class AppRoutes {
       GoRoute(
         path: test,
         builder: (context, state) => BirthDateForm(),
+      ),
+      GoRoute(
+        path: resetPasswordPage,
+        builder: (context, state) => ResetPasswordPage(),
       ),
       GoRoute(
         path: '$profilePage/:userId',

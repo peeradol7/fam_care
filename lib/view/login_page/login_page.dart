@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../controller/email_login_controller.dart';
+import '../../controller/email_auth_controller.dart';
 import '../../controller/google_auth_controller.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -17,8 +17,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   CustomButton customButton = CustomButton();
-  final EmailLoginController _emailController =
-      Get.find<EmailLoginController>();
+  final EmailAuthController _emailController = Get.find<EmailAuthController>();
 
   final GoogleAuthController googleAuthController =
       Get.find<GoogleAuthController>();
@@ -118,7 +117,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.push(AppRoutes.resetPasswordPage);
+                        },
                         child: const Text('ลืมรหัสผ่าน?'),
                       ),
                     ),
