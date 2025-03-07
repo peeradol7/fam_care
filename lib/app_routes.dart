@@ -39,10 +39,6 @@ class AppRoutes {
         builder: (context, state) => HomeScreen(),
       ),
       GoRoute(
-        path: test,
-        builder: (context, state) => BirthDateForm(),
-      ),
-      GoRoute(
         path: resetPasswordPage,
         builder: (context, state) => ResetPasswordPage(),
       ),

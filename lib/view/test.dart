@@ -1,90 +1,36 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-class BirthDateForm extends StatefulWidget {
-  @override
-  _BirthDateFormState createState() => _BirthDateFormState();
-}
+import '../service/facebook_auth_service.dart';
 
-class _BirthDateFormState extends State<BirthDateForm> {
-  final _formKey = GlobalKey<FormState>();
-  DateTime _birthDate = DateTime.now();
-  DateTime _periodDate = DateTime.now();
-
-  final TextEditingController _birthDateController = TextEditingController();
-  final TextEditingController _periodDateController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _birthDateController.text =
-        "${_birthDate.toLocal()}".split(' ')[0]; // Format initial date
-    _periodDateController.text = "${_periodDate.toLocal()}".split(' ')[0];
-  }
+class FacebookLoginScreen extends StatelessWidget {
+  final FacebookAuthService _facebookAuthService = FacebookAuthService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Enter Your Birth Date and Period Date')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              TextFormField(
-                controller: _birthDateController,
-                decoration: InputDecoration(labelText: 'Birth Date'),
-                readOnly: true,
-                onTap: () async {
-                  DateTime pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: _birthDate,
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime.now(),
-                      ) ??
-                      _birthDate;
-
-                  setState(() {
-                    _birthDate = pickedDate;
-                    _birthDateController.text =
-                        "${_birthDate.toLocal()}".split(' ')[0];
-                  });
-                },
-              ),
-              TextFormField(
-                controller: _periodDateController,
-                decoration: InputDecoration(labelText: 'Period Date'),
-                readOnly: true,
-                onTap: () async {
-                  DateTime pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: _periodDate,
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime.now(),
-                      ) ??
-                      _periodDate;
-
-                  setState(() {
-                    _periodDate = pickedDate;
-                    _periodDateController.text =
-                        "${_periodDate.toLocal()}".split(' ')[0];
-                  });
-                },
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    // Call AuthService to save data to Firestore
-                  }
-                },
-                child: Text('Submit'),
-              ),
-            ],
-          ),
+      appBar: AppBar(title: Text("Facebook Login")),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () async {
+            UserCredential? userCredential =
+                await _facebookAuthService.signInWithFacebook();
+            if (userCredential != null) {
+              print("Logged in as: ${userCredential.user?.displayName}");
+            } else {
+              print("Login failed");
+            }
+          },
+          child: Text("Login with Facebook"),
         ),
       ),
     );
   }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MaterialApp(home: FacebookLoginScreen()));
 }
