@@ -27,6 +27,10 @@ class AppRoutes {
         builder: (context, state) => LandingPage(),
       ),
       GoRoute(
+        path: test,
+        builder: (context, state) => FacebookLoginScreen(),
+      ),
+      GoRoute(
         path: loginPage,
         builder: (context, state) => LoginScreen(),
       ),

@@ -12,7 +12,8 @@ class FacebookAuthService {
         final AccessToken accessToken = result.accessToken!;
         final AuthCredential credential =
             FacebookAuthProvider.credential(accessToken.tokenString);
-
+        print("Login result status: ${result.status}");
+        print("Login result message: ${result.message}");
         return await _auth.signInWithCredential(credential);
       } else {
         print("Facebook Login Failed: ${result.status}");
@@ -20,6 +21,7 @@ class FacebookAuthService {
       }
     } catch (e) {
       print("Error: $e");
+      print("Detailed error during Facebook sign in: $e");
       return null;
     }
   }
