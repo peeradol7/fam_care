@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.app.fam_care"
+    namespace = "com.example.fam_care"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -23,7 +23,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.app.fam_care"
+        applicationId = "com.example.fam_care"
         minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

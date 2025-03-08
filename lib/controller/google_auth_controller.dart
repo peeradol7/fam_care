@@ -25,6 +25,7 @@ class GoogleAuthController extends GetxController {
 
   Future<void> googleLogin() async {
     final result = await authService.loginWithGoogle();
+
     if (result != null) {
       await userController.fetchUserDataById(result.uid);
     } else {
