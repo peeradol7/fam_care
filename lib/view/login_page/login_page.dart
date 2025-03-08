@@ -1,4 +1,5 @@
 import 'package:fam_care/app_routes.dart';
+import 'package:fam_care/controller/facebook_auth_controller.dart';
 import 'package:fam_care/controller/user_controller.dart';
 import 'package:fam_care/view/login_page/custom_button.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final GoogleAuthController googleAuthController =
       Get.find<GoogleAuthController>();
   final UserController userController = Get.find<UserController>();
+  final FacebookAuthController facebookAuthController =
+      Get.put(FacebookAuthController());
   final TextEditingController _emailTextController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -39,6 +42,16 @@ class _LoginScreenState extends State<LoginScreen> {
       await googleAuthController.googleLoginController();
     }
     if (userController.userData.value != null) {
+      context.go(AppRoutes.homePage);
+    }
+  }
+
+  Future<void> facebookLogin() async {
+    if (facebookAuthController.user.value == null) {
+      CircularProgressIndicator();
+      await facebookAuthController.signInWithFacebook();
+    }
+    if (facebookAuthController.user.value != null) {
       context.go(AppRoutes.homePage);
     }
   }
@@ -177,11 +190,21 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 24),
               customButton.btnSignUp(
-                  iconPath: 'assets/icons/google.png',
-                  onPressed: () {
-                    googleHandleLogin();
-                  },
-                  label: 'เข้าสู่ระบบด้วย Google '),
+                iconPath: 'assets/icons/google.png',
+                onPressed: () {
+                  googleHandleLogin();
+                },
+                label: 'เข้าสู่ระบบด้วย Google',
+              ),
+              const SizedBox(height: 24),
+              customButton.btnSignUp(
+                iconPath: 'assets/icons/facebook.png',
+                onPressed: () {
+                  // googleHandleLogin();
+                  facebookLogin();
+                },
+                label: 'เข้าสู่ระบบด้วย Facebook',
+              ),
               const Row(
                 children: [
                   Expanded(child: Divider()),
@@ -208,6 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: 50),
             ],
           ),
         ),

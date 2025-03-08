@@ -62,7 +62,7 @@ class LandingPage extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue),
                       onPressed: () {
-                        context.push(AppRoutes.test);
+                        context.push(AppRoutes.loginPage);
                       },
                       child: const Text(
                         'Login',

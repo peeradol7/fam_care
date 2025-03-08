@@ -8,6 +8,7 @@ import '../service/user_service.dart';
 
 class UserController extends GetxController {
   final UserService _userService = UserService();
+
   var userData = Rxn<UsersModel>();
   Rx<UsersModel?> editUserData = Rx<UsersModel?>(null);
 
