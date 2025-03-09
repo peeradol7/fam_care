@@ -93,7 +93,9 @@ class EmailAuthController extends GetxController {
   }
 
   String _getReadableErrorMessage_Login(String errorMessage) {
-    if (errorMessage.contains("wrong-password")) {
+    if (errorMessage.contains("กรุณายืนยันอีเมล") || errorMessage.contains("email verification")) {
+      return "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ";
+    } else if (errorMessage.contains("wrong-password")) {
       return "รหัสผ่านไม่ถูกต้อง";
     } else if (errorMessage.contains("user-not-found")) {
       return "ไม่พบบัญชีผู้ใช้นี้ในระบบ";

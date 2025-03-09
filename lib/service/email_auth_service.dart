@@ -37,11 +37,6 @@ class EmailAuthService {
     return null;
   }
 
-  Future<bool> isEmailVerified() async {
-    User? user = _auth.currentUser;
-    await user?.reload();
-    return user?.emailVerified ?? false;
-  }
 
   Future<User?> signIn(String email, String password) async {
     try {
@@ -51,7 +46,11 @@ class EmailAuthService {
       User? firebaseUser = userCredential.user;
 
       if (firebaseUser != null && !firebaseUser.emailVerified) {
-        throw "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ";
+        // สร้าง FirebaseAuthException เพื่อให้สามารถจัดการในส่วน _handleAuthError
+        throw FirebaseAuthException(
+          code: 'email-not-verified',
+          message: 'กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ'
+        );
       }
 
       print("เข้าสู่ระบบสำเร็จ!");
@@ -93,6 +92,9 @@ class EmailAuthService {
   void _handleAuthError(FirebaseAuthException e) {
     String errorMessage;
     switch (e.code) {
+      case 'email-not-verified':
+        errorMessage = "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ";
+        break;
       case 'email-already-in-use':
         errorMessage = "อีเมลนี้มีผู้ใช้งานแล้ว";
         break;
