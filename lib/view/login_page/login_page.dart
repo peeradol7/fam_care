@@ -143,32 +143,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? null
                             : () async {
                                 if (_formKey.currentState!.validate()) {
-                                  try {
                                     await _emailController.signIn(
                                       _emailTextController.text,
                                       _passwordController.text,
                                       context,
                                     );
-                                  } catch (e) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Text("กรุณายืนยันอีเมล"),
-                                          content: Text(
-                                              "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ"),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Text("ตกลง"),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  }
                                 }
                               },
                         style: ElevatedButton.styleFrom(
